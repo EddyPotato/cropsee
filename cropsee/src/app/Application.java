@@ -156,9 +156,7 @@ public class Application {
 		JPanel reportPanel = new JPanel();
 
 		/*_____________________ PANELS - INFORMATION _____________________*/
-		dashboardPanel.setBackground(Color.white);
-		dashboardPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		dashboardPanel.setLayout(new GridLayout(1, 3, 5, 5));
+		
 
 		cropManagementPanel.setBackground(Color.white);
 		cropManagementPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -177,6 +175,12 @@ public class Application {
 		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
 
 		/*===================== DASHBOARD =====================*/
+		dashboardPanel.setBackground(Color.white);
+		dashboardPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
+		
+		
+		
 		JPanel summaryCard1 = new JPanel();
 		summaryCard1.setFont(new Font("Tahoma", Font.BOLD, 18));
 		summaryCard1.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -289,10 +293,10 @@ public class Application {
 		mainPanel.add(reportPanel, "reports");
 
 		/*===================== ACTION LISTENER FOR CARD LAYOUT =====================*/
-		dashboardBtn.addActionListener(_ -> cardLayout.show(mainPanel, "dashboard"));
-		manageBtn.addActionListener(_ -> cardLayout.show(mainPanel, "management"));
-		monitorBtn.addActionListener(_ -> cardLayout.show(mainPanel, "inventory"));
-		tasksBtn.addActionListener(_ -> cardLayout.show(mainPanel, "tasks"));
-		reportsBtn.addActionListener(_ -> cardLayout.show(mainPanel, "reports"));
+		dashboardBtn.addActionListener(e -> cardLayout.show(mainPanel, "dashboard"));
+		manageBtn.addActionListener(e -> cardLayout.show(mainPanel, "management"));
+		monitorBtn.addActionListener(e -> cardLayout.show(mainPanel, "inventory"));
+		tasksBtn.addActionListener(e -> cardLayout.show(mainPanel, "tasks"));
+		reportsBtn.addActionListener(e -> cardLayout.show(mainPanel, "reports"));
 	}
 }
