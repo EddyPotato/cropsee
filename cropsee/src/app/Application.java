@@ -25,10 +25,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class Application {
 	/*_____________________ CLASS-LEVEL _____________________*/
 	private JFrame mainFrame;
 	private CardLayout cardLayout = new CardLayout();
+	private Connection connection;
 
 	/*_____________________ REUSABLE METHODS _____________________*/
 
@@ -52,8 +57,26 @@ public class Application {
 	public Application() {
 		initialize();
 	}
+	
+	private void connectToDatabase() {
+	    try {
+	        // Adjust these credentials as needed
+	        String url = "jdbc:mysql://localhost:3306/cropsee";
+	        String username = "root";
+	        String password = ""; // Leave blank if no password
+
+	        connection = DriverManager.getConnection(url, username, password);
+	        System.out.println("Database connected successfully!");
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(null, "Failed to connect to the database:\n" + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+	        e.printStackTrace();
+	    }
+	}
 
 	private void initialize() {
+		/*_____________________ DATABASE _____________________*/
+		connectToDatabase(); // Establish database connection first
+		
 		/*_____________________ FRAME _____________________*/
 		mainFrame = new JFrame();
 		mainFrame.setResizable(true);
