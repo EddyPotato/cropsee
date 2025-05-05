@@ -25,14 +25,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import ui.CropTableManager;
+import ui.*; // import all CONTENT OF TABS
 
 public class Application {
 	/*_____________________ CLASS-LEVEL _____________________*/
@@ -321,6 +318,9 @@ public class Application {
 		tasksActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
 		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
 
+		// Adding the tasks table to the Tasks Management panel using TasksTableManager
+		TasksTableManager.addTasksTable(tasksPanel);
+		
 		tasksPanel.add(tasksListTable);
 		tasksPanel.add(createBorderGap());
 		tasksPanel.add(tasksActionPanel);
@@ -334,6 +334,9 @@ public class Application {
 		inventoryActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
 		inventoryActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
 
+		// Adding the inventory table to the Inventory Management panel using InventoryTableManager
+		InventoryTableManager.addInventoryTable(InventoryPanel);
+		
 		InventoryPanel.add(inventoryListTable);
 		InventoryPanel.add(createBorderGap());
 		InventoryPanel.add(inventoryActionPanel);
@@ -347,6 +350,9 @@ public class Application {
 		pestTrendPanel.setPreferredSize(new Dimension(0, 300));
 		pestTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
+		// Adding the reports table to the Reports Management panel using ReportsTableManager
+		ReportsTableManager.addReportsTable(reportPanel);
+		
 		/*_____________________ EXPORT _____________________*/
 		JPanel exportActionPanel = new JPanel();
 		exportActionPanel.setPreferredSize(new Dimension(0, 100));
