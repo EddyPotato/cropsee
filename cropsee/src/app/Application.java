@@ -32,6 +32,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import ui.CropTableManager;
+
 public class Application {
 	/*_____________________ CLASS-LEVEL _____________________*/
 	private JFrame mainFrame;
@@ -299,8 +301,8 @@ public class Application {
 	    tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
 	    tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 	    
-	    // Adding the table to the Crop Management panel
-	    addCropManagementTable(tableListofCrops);
+	    // Adding the table to the Crop Management panel using CropTableManager
+	    CropTableManager.addCropManagementTable(tableListofCrops);
 
 	    JPanel cropManagementActionPanel = new JPanel();
 	    cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
@@ -377,25 +379,5 @@ public class Application {
 		monitorBtn.addActionListener(e -> cardLayout.show(mainPanel, "inventory"));
 		tasksBtn.addActionListener(e -> cardLayout.show(mainPanel, "tasks"));
 		reportsBtn.addActionListener(e -> cardLayout.show(mainPanel, "reports"));
-	}
-	
-	private void addCropManagementTable(JPanel tableListofCrops) {
-	    // Column names for the table
-	    String[] columnNames = { "Crop ID", "Crop Name", "Planting Date", "Harvest Date", "Status" };
-
-	    // Sample data for the crops table (replace with database data later)
-	    Object[][] data = {
-	        { "1", "Tomato", "2023-03-15", "2023-06-15", "Growing" },
-	        { "2", "Corn", "2023-02-20", "2023-05-20", "Harvested" },
-	        { "3", "Wheat", "2023-04-10", "2023-07-10", "Growing" },
-	    };
-
-	    // Creating a table model with the data
-	    DefaultTableModel model = new DefaultTableModel(data, columnNames);
-	    JTable cropTable = new JTable(model);
-
-	    // Setting the table in a JScrollPane for scrolling
-	    JScrollPane tableScrollPane = new JScrollPane(cropTable);
-	    tableListofCrops.add(tableScrollPane);
 	}
 }
