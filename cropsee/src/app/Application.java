@@ -295,15 +295,15 @@ public class Application {
 
 	    /*===================== CROP MANAGEMENT =====================*/
 	    JPanel tableListofCrops = new JPanel();
-	    tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
+	    tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
 	    tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 	    
 	    // Adding the table to the Crop Management panel using CropTableManager
 	    CropTableManager.addCropManagementTable(tableListofCrops);
 
 	    JPanel cropManagementActionPanel = new JPanel();
-	    cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-	    cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+	    cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+	    cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 	    cropManagementPanel.add(tableListofCrops);
 	    cropManagementPanel.add(createBorderGap());
