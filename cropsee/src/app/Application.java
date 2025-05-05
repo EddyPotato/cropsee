@@ -25,6 +25,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -33,7 +36,8 @@ public class Application {
 	/*_____________________ CLASS-LEVEL _____________________*/
 	private JFrame mainFrame;
 	private CardLayout cardLayout = new CardLayout();
-	private Connection connection;
+	@SuppressWarnings("unused")
+	private Connection connection; // IT IS USED BALIW LANG ECLIPSE
 
 	/*_____________________ REUSABLE METHODS _____________________*/
 
@@ -61,7 +65,7 @@ public class Application {
 	private void connectToDatabase() {
 	    try {
 	        // Adjust these credentials as needed
-	        String url = "jdbc:mysql://localhost:3306/cropsee";
+	        String url = "jdbc:mysql://localhost:3306/cropsee_db";
 	        String username = "root";
 	        String password = ""; // Leave blank if no password
 
@@ -73,6 +77,7 @@ public class Application {
 	    }
 	}
 
+	@SuppressWarnings("unused")
 	private void initialize() {
 		/*_____________________ DATABASE _____________________*/
 		connectToDatabase(); // Establish database connection first
@@ -289,44 +294,47 @@ public class Application {
 		dashboardPanel.add(createBorderGap());
 		dashboardPanel.add(container_ActionDashboard);
 
-		/*===================== CROP MANAGEMENT =====================*/
-		JPanel manageTable = new JPanel();
-		manageTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
-		manageTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+	    /*===================== CROP MANAGEMENT =====================*/
+	    JPanel tableListofCrops = new JPanel();
+	    tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
+	    tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+	    
+	    // Adding the table to the Crop Management panel
+	    addCropManagementTable(tableListofCrops);
 
-		JPanel tableListofCrop = new JPanel();
-		tableListofCrop.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		tableListofCrop.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+	    JPanel cropManagementActionPanel = new JPanel();
+	    cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+	    cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
 
-		cropManagementPanel.add(manageTable);
-		cropManagementPanel.add(createBorderGap());
-		cropManagementPanel.add(tableListofCrop);
+	    cropManagementPanel.add(tableListofCrops);
+	    cropManagementPanel.add(createBorderGap());
+	    cropManagementPanel.add(cropManagementActionPanel);
 
 		/*===================== TASK =====================*/
-		JPanel tasksTable = new JPanel();
-		tasksTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
-		tasksTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		JPanel tasksListTable = new JPanel();
+		tasksListTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
+		tasksListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-		JPanel tasksActions = new JPanel();
-		tasksActions.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		tasksActions.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+		JPanel tasksActionPanel = new JPanel();
+		tasksActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
 
-		tasksPanel.add(tasksTable);
+		tasksPanel.add(tasksListTable);
 		tasksPanel.add(createBorderGap());
-		tasksPanel.add(tasksActions);
+		tasksPanel.add(tasksActionPanel);
 
 		/*===================== INVENTORY =====================*/
-		JPanel inventoryTable = new JPanel();
-		inventoryTable.setPreferredSize(new Dimension(0, 400));
-		inventoryTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		JPanel inventoryListTable = new JPanel();
+		inventoryListTable.setPreferredSize(new Dimension(0, 400));
+		inventoryListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-		JPanel inventoryActions = new JPanel();
-		inventoryActions.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		inventoryActions.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+		JPanel inventoryActionPanel = new JPanel();
+		inventoryActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+		inventoryActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
 
-		InventoryPanel.add(inventoryTable);
+		InventoryPanel.add(inventoryListTable);
 		InventoryPanel.add(createBorderGap());
-		InventoryPanel.add(inventoryActions);
+		InventoryPanel.add(inventoryActionPanel);
 
 		/*===================== REPORT =====================*/
 		JPanel growthTrendPanel = new JPanel();
@@ -338,23 +346,23 @@ public class Application {
 		pestTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		/*_____________________ EXPORT _____________________*/
-		JPanel exportPanel = new JPanel();
-		exportPanel.setPreferredSize(new Dimension(0, 100));
-		exportPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-		exportPanel.setLayout(new BorderLayout(0, 0));
+		JPanel exportActionPanel = new JPanel();
+		exportActionPanel.setPreferredSize(new Dimension(0, 100));
+		exportActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		exportActionPanel.setLayout(new BorderLayout(0, 0));
 
 		/*_____________________ EXPORT BUTTON _____________________*/
 		JButton export = new JButton("EXPORT STATISTICS");
 		export.setFont(new Font("Tahoma", Font.BOLD, 20));
 		export.setSize(500, 500);
 		export.setFocusPainted(false);
-		exportPanel.add(export, BorderLayout.CENTER);
+		exportActionPanel.add(export, BorderLayout.CENTER);
 
 		reportPanel.add(growthTrendPanel);
 		reportPanel.add(createBorderGap());
 		reportPanel.add(pestTrendPanel);
 		reportPanel.add(createBorderGap());
-		reportPanel.add(exportPanel);
+		reportPanel.add(exportActionPanel);
 
 		/*===================== ADD TO CENTRAL PANEL =====================*/
 		mainPanel.add(dashboardPanel, "dashboard");
@@ -369,5 +377,25 @@ public class Application {
 		monitorBtn.addActionListener(e -> cardLayout.show(mainPanel, "inventory"));
 		tasksBtn.addActionListener(e -> cardLayout.show(mainPanel, "tasks"));
 		reportsBtn.addActionListener(e -> cardLayout.show(mainPanel, "reports"));
+	}
+	
+	private void addCropManagementTable(JPanel tableListofCrops) {
+	    // Column names for the table
+	    String[] columnNames = { "Crop ID", "Crop Name", "Planting Date", "Harvest Date", "Status" };
+
+	    // Sample data for the crops table (replace with database data later)
+	    Object[][] data = {
+	        { "1", "Tomato", "2023-03-15", "2023-06-15", "Growing" },
+	        { "2", "Corn", "2023-02-20", "2023-05-20", "Harvested" },
+	        { "3", "Wheat", "2023-04-10", "2023-07-10", "Growing" },
+	    };
+
+	    // Creating a table model with the data
+	    DefaultTableModel model = new DefaultTableModel(data, columnNames);
+	    JTable cropTable = new JTable(model);
+
+	    // Setting the table in a JScrollPane for scrolling
+	    JScrollPane tableScrollPane = new JScrollPane(cropTable);
+	    tableListofCrops.add(tableScrollPane);
 	}
 }
