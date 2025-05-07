@@ -293,35 +293,72 @@ public class Application {
 		dashboardPanel.add(createBorderGap());
 		dashboardPanel.add(container_ActionDashboard);
 
-	    /*===================== CROP MANAGEMENT =====================*/
-	    JPanel tableListofCrops = new JPanel();
-	    tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
-	    tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-	    
-	    // Adding the table to the Crop Management panel using CropTableManager
-	    CropTableManager.addCropManagementTable(tableListofCrops);
+		/*===================== CROP MANAGEMENT =====================*/
+		JPanel tableListofCrops = new JPanel(new BorderLayout()); // Use BorderLayout
+		tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
+		tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-	    JPanel cropManagementActionPanel = new JPanel();
-	    cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
-	    cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		// Adding the table to the Crop Management panel
+		CropTableManager.addCropManagementTable(tableListofCrops);
 
-	    cropManagementPanel.add(tableListofCrops);
-	    cropManagementPanel.add(createBorderGap());
-	    cropManagementPanel.add(cropManagementActionPanel);
+		JPanel cropManagementActionPanel = new JPanel();
+		cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+		cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 
+		// Create action buttons similar to tasks panel
+		JButton addCropBtn = new JButton("Add New Crop");
+		JButton editCropBtn = new JButton("Edit Crop");
+		JButton deleteCropBtn = new JButton("Delete Crop");
+
+		// Style buttons
+		for (JButton btn : new JButton[]{addCropBtn, editCropBtn, deleteCropBtn}) {
+		    btn.setFont(new Font("Tahoma", Font.BOLD, 14));
+		    btn.setFocusPainted(false);
+		    btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		}
+
+		cropManagementActionPanel.add(addCropBtn);
+		cropManagementActionPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+		cropManagementActionPanel.add(editCropBtn);
+		cropManagementActionPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+		cropManagementActionPanel.add(deleteCropBtn);
+
+		cropManagementPanel.add(tableListofCrops);
+		cropManagementPanel.add(createBorderGap());
+		cropManagementPanel.add(cropManagementActionPanel);
 		/*===================== TASK =====================*/
-		JPanel tasksListTable = new JPanel();
-		tasksListTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
-		tasksListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		/*===================== TASK =====================*/
+		JPanel tableListofTasks = new JPanel(new BorderLayout());
+		tableListofTasks.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
+		tableListofTasks.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+		// Adding the tasks table
+		TasksTableManager.addTasksTable(tableListofTasks);
 
 		JPanel tasksActionPanel = new JPanel();
 		tasksActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 
-		// Adding the tasks table to the Tasks Management panel using TasksTableManager
-		TasksTableManager.addTasksTable(tasksPanel);
-		
-		tasksPanel.add(tasksListTable);
+		// Action buttons
+		JButton addTaskBtn = new JButton("Add New Task");
+		JButton editTaskBtn = new JButton("Edit Task");
+		JButton completeTaskBtn = new JButton("Mark Complete");
+
+		// Style buttons consistently
+		for (JButton btn : new JButton[]{addTaskBtn, editTaskBtn, completeTaskBtn}) {
+		    btn.setFont(new Font("Tahoma", Font.BOLD, 14));
+		    btn.setFocusPainted(false);
+		    btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		}
+
+		// Add buttons with spacing
+		tasksActionPanel.add(addTaskBtn);
+		tasksActionPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+		tasksActionPanel.add(editTaskBtn);
+		tasksActionPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+		tasksActionPanel.add(completeTaskBtn);
+
+		tasksPanel.add(tableListofTasks);
 		tasksPanel.add(createBorderGap());
 		tasksPanel.add(tasksActionPanel);
 
