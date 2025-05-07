@@ -29,6 +29,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.swing.JDialog;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import java.sql.Date;  // Important for database dates
+
 import ui.*; // import all CONTENT OF TABS
 
 public class Application {
@@ -42,6 +47,119 @@ public class Application {
 
 	private Component createBorderGap() {
 		return Box.createRigidArea(new Dimension(0, 5));
+	}
+	
+	private void showAddCropDialog() {
+	    JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
+	    dialog.setLayout(new GridLayout(5, 2, 5, 5));
+
+	    JTextField nameField = new JTextField();
+	    JTextField plantingDateField = new JTextField();
+	    JTextField harvestDateField = new JTextField();
+	    JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Planning", "Growing", "Harvested"});
+
+	    dialog.add(new JLabel("Crop Name:"));
+	    dialog.add(nameField);
+	    dialog.add(new JLabel("Planting Date (YYYY-MM-DD):"));
+	    dialog.add(plantingDateField);
+	    dialog.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
+	    dialog.add(harvestDateField);
+	    dialog.add(new JLabel("Status:"));
+	    dialog.add(statusCombo);
+
+	    JButton submitButton = new JButton("Add Crop");
+	    submitButton.addActionListener(e -> {
+	        try {
+	            Date plantingDate = Date.valueOf(plantingDateField.getText());
+	            Date harvestDate = Date.valueOf(harvestDateField.getText());
+	            CropTableManager.addCrop(
+	                nameField.getText(),
+	                plantingDate,
+	                harvestDate,
+	                (String) statusCombo.getSelectedItem()
+	            );
+	            dialog.dispose();
+	        } catch (IllegalArgumentException ex) {
+	            JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD");
+	        }
+	    });
+
+	    dialog.add(submitButton);
+	    dialog.pack();
+	    dialog.setLocationRelativeTo(mainFrame);
+	    dialog.setVisible(true);
+	}
+
+	private void showEditCropDialog() {
+	    int selectedRow = CropTableManager.cropTable.getSelectedRow();
+	    if (selectedRow == -1) {
+	        JOptionPane.showMessageDialog(mainFrame, "Please select a crop to edit!");
+	        return;
+	    }
+
+	    int cropId = (int) CropTableManager.model.getValueAt(selectedRow, 0);
+	    String name = (String) CropTableManager.model.getValueAt(selectedRow, 1);
+	    Date plantingDate = (Date) CropTableManager.model.getValueAt(selectedRow, 2);
+	    Date harvestDate = (Date) CropTableManager.model.getValueAt(selectedRow, 3);
+	    String status = (String) CropTableManager.model.getValueAt(selectedRow, 4);
+
+	    JDialog dialog = new JDialog(mainFrame, "Edit Crop", true);
+	    dialog.setLayout(new GridLayout(5, 2, 5, 5));
+
+	    JTextField nameField = new JTextField(name);
+	    JTextField plantingDateField = new JTextField(plantingDate.toString());
+	    JTextField harvestDateField = new JTextField(harvestDate.toString());
+	    JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Planning", "Growing", "Harvested"});
+	    statusCombo.setSelectedItem(status);
+
+	    // Add components to dialog
+	    dialog.add(new JLabel("Crop Name:"));
+	    dialog.add(nameField);
+	    dialog.add(new JLabel("Planting Date (YYYY-MM-DD):"));
+	    dialog.add(plantingDateField);
+	    dialog.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
+	    dialog.add(harvestDateField);
+	    dialog.add(new JLabel("Status:"));
+	    dialog.add(statusCombo);
+
+	    JButton submitButton = new JButton("Update Crop");
+	    submitButton.addActionListener(e -> {
+	        try {
+	            Date newPlantingDate = Date.valueOf(plantingDateField.getText());
+	            Date newHarvestDate = Date.valueOf(harvestDateField.getText());
+	            CropTableManager.updateCrop(
+	                cropId,
+	                nameField.getText(),
+	                newPlantingDate,
+	                newHarvestDate,
+	                (String) statusCombo.getSelectedItem()
+	            );
+	            dialog.dispose();
+	        } catch (IllegalArgumentException ex) {
+	            JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD");
+	        }
+	    });
+
+	    dialog.add(submitButton);
+	    dialog.pack();
+	    dialog.setLocationRelativeTo(mainFrame);
+	    dialog.setVisible(true);
+	}
+
+	private void deleteSelectedCrop() {
+	    int selectedRow = CropTableManager.cropTable.getSelectedRow();
+	    if (selectedRow == -1) {
+	        JOptionPane.showMessageDialog(mainFrame, "Please select a crop to delete!");
+	        return;
+	    }
+
+	    int confirm = JOptionPane.showConfirmDialog(mainFrame, 
+	        "Are you sure you want to delete this crop?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+	    
+	    if (confirm == JOptionPane.YES_OPTION) {
+	        int cropId = (int) CropTableManager.model.getValueAt(selectedRow, 0);
+	        CropTableManager.deleteCrop(cropId);
+	    }
 	}
 
 	/*_____________________ METHODS _____________________*/
@@ -309,6 +427,10 @@ public class Application {
 		JButton addCropBtn = new JButton("Add New Crop");
 		JButton editCropBtn = new JButton("Edit Crop");
 		JButton deleteCropBtn = new JButton("Delete Crop");
+		
+		addCropBtn.addActionListener(e -> showAddCropDialog());
+		editCropBtn.addActionListener(e -> showEditCropDialog());
+		deleteCropBtn.addActionListener(e -> deleteSelectedCrop());
 
 		// Style buttons
 		for (JButton btn : new JButton[]{addCropBtn, editCropBtn, deleteCropBtn}) {
@@ -326,7 +448,7 @@ public class Application {
 		cropManagementPanel.add(tableListofCrops);
 		cropManagementPanel.add(createBorderGap());
 		cropManagementPanel.add(cropManagementActionPanel);
-		/*===================== TASK =====================*/
+
 		/*===================== TASK =====================*/
 		JPanel tableListofTasks = new JPanel(new BorderLayout());
 		tableListofTasks.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
