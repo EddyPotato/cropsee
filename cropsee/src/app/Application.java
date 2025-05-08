@@ -310,12 +310,12 @@ public class Application {
 
 		/*===================== TASK =====================*/
 		JPanel tasksListTable = new JPanel();
-		tasksListTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
+		tasksListTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
 		tasksListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		JPanel tasksActionPanel = new JPanel();
-		tasksActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+		tasksActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		// Adding the tasks table to the Tasks Management panel using TasksTableManager
 		TasksTableManager.addTasksTable(tasksPanel);
@@ -326,12 +326,12 @@ public class Application {
 
 		/*===================== INVENTORY =====================*/
 		JPanel inventoryListTable = new JPanel();
-		inventoryListTable.setPreferredSize(new Dimension(0, 400));
+		inventoryListTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
 		inventoryListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		JPanel inventoryActionPanel = new JPanel();
-		inventoryActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		inventoryActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+		inventoryActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+		inventoryActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		// Adding the inventory table to the Inventory Management panel using InventoryTableManager
 		InventoryTableManager.addInventoryTable(InventoryPanel);
@@ -342,11 +342,11 @@ public class Application {
 
 		/*===================== REPORT =====================*/
 		JPanel growthTrendPanel = new JPanel();
-		growthTrendPanel.setPreferredSize(new Dimension(0, 300));
+		growthTrendPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
 		growthTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		JPanel pestTrendPanel = new JPanel();
-		pestTrendPanel.setPreferredSize(new Dimension(0, 300));
+		pestTrendPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
 		pestTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		// Adding the reports table to the Reports Management panel using ReportsTableManager
@@ -354,8 +354,8 @@ public class Application {
 		
 		/*_____________________ EXPORT _____________________*/
 		JPanel exportActionPanel = new JPanel();
-		exportActionPanel.setPreferredSize(new Dimension(0, 100));
-		exportActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		exportActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+		exportActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 		exportActionPanel.setLayout(new BorderLayout(0, 0));
 
 		/*_____________________ EXPORT BUTTON _____________________*/
