@@ -40,9 +40,9 @@ public class Application {
 
 	/*_____________________ REUSABLE METHODS _____________________*/
 
-	private Component createBorderGap() {
-		return Box.createRigidArea(new Dimension(0, 5));
-	}
+//	private Component createBorderGap() {
+//		return Box.createRigidArea(new Dimension(0, 5));
+//	}
 
 	/*_____________________ METHODS _____________________*/
 	public static void main(String[] args) {
@@ -290,7 +290,7 @@ public class Application {
 		summaryCard2.add(scrollPane2);
 
 		dashboardPanel.add(container_SummmaryCard);
-		dashboardPanel.add(createBorderGap());
+		dashboardPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		dashboardPanel.add(container_ActionDashboard);
 
 	    /*===================== CROP MANAGEMENT =====================*/
@@ -306,7 +306,7 @@ public class Application {
 	    cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 	    cropManagementPanel.add(tableListofCrops);
-	    cropManagementPanel.add(createBorderGap());
+	    cropManagementPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 	    cropManagementPanel.add(cropManagementActionPanel);
 
 		/*===================== TASK =====================*/
@@ -322,7 +322,7 @@ public class Application {
 		TasksTableManager.addTasksTable(tasksPanel);
 		
 		tasksPanel.add(tasksListTable);
-		tasksPanel.add(createBorderGap());
+		tasksPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		tasksPanel.add(tasksActionPanel);
 
 		/*===================== INVENTORY =====================*/
@@ -338,7 +338,7 @@ public class Application {
 		InventoryTableManager.addInventoryTable(InventoryPanel);
 		
 		InventoryPanel.add(inventoryListTable);
-		InventoryPanel.add(createBorderGap());
+		InventoryPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		InventoryPanel.add(inventoryActionPanel);
 
 		/*===================== REPORT =====================*/
@@ -367,9 +367,9 @@ public class Application {
 		exportActionPanel.add(export, BorderLayout.CENTER);
 
 		reportPanel.add(growthTrendPanel);
-		reportPanel.add(createBorderGap());
+		reportPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		reportPanel.add(pestTrendPanel);
-		reportPanel.add(createBorderGap());
+		reportPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		reportPanel.add(exportActionPanel);
 
 		/*===================== ADD TO CENTRAL PANEL =====================*/
