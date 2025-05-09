@@ -6,22 +6,25 @@ import java.awt.*;
 
 public class ReportsTableManager {
     public static void addReportsTable(JPanel reportsPanel) {
-        // Column names for the reports table
+    	/*_____________________ TABLE DATA _____________________*/
         String[] columnNames = { "Report ID", "Report Type", "Generated On", "Details" };
 
-        // Sample data for the reports table (replace with database data later)
         Object[][] data = {
             { "1", "Weekly Crop Report", "2023-05-05", "Details about crop growth" },
             { "2", "Monthly Harvest Report", "2023-04-30", "Details about harvested crops" },
             { "3", "Inventory Report", "2023-05-01", "Details about inventory levels" },
         };
 
-        // Creating a table model with the data
+        /*_____________________ DATA DECLARATION _____________________*/
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        
+        /*_____________________ TABLE WITH THE DATA _____________________*/
         JTable reportsTable = new JTable(model);
 
-        // Setting the table in a JScrollPane for scrolling
+        /*_____________________ ADDING TABLE TO SCROLL PANE _____________________*/
         JScrollPane tableScrollPane = new JScrollPane(reportsTable);
+        
+        /*_____________________ ADD TO THE PANEL (CONTAINER) _____________________*/
         reportsPanel.add(tableScrollPane);
     }
 }

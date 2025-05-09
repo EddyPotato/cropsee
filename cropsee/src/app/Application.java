@@ -3,7 +3,6 @@ package app;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -38,9 +37,12 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.ArrayList;
 
+=======
+>>>>>>> main
 import ui.*; // import all CONTENT OF TABS
 
 public class Application {
@@ -52,6 +54,7 @@ public class Application {
 
 	/*_____________________ REUSABLE METHODS _____________________*/
 
+<<<<<<< HEAD
 	private Component createBorderGap() {
 		return Box.createRigidArea(new Dimension(0, 5));
 	}
@@ -431,6 +434,11 @@ public class Application {
 	        InventoryTableManager.deleteItem(itemId);
 	    }
 	}
+=======
+//	private Component createBorderGap() {
+//		return Box.createRigidArea(new Dimension(0, 5));
+//	}
+>>>>>>> main
 
 	/*_____________________ METHODS _____________________*/
 	public static void main(String[] args) {
@@ -624,56 +632,96 @@ public class Application {
 		InventoryPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		reportPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
+<<<<<<< HEAD
 		/*===================== CROP MANAGEMENT =====================*/
 		JPanel tableListofCrops = new JPanel(new BorderLayout()); // Use BorderLayout
 		tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
 		tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+=======
+		/*===================== DASHBOARD =====================*/
+		/*_____________________ PRIMARY CONTAINER _____________________*/
+		JPanel container_SummmaryCard = new JPanel();
+		container_SummmaryCard.setPreferredSize(new Dimension(Integer.MAX_VALUE, 1000)); // width - height
+		container_SummmaryCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		container_SummmaryCard.setBackground(Color.red);
 
-		// Adding the table to the Crop Management panel
-		CropTableManager.addCropManagementTable(tableListofCrops);
+		JPanel container_ActionDashboard = new JPanel();
+		container_ActionDashboard.setPreferredSize(new Dimension(Integer.MAX_VALUE, 200)); // width - height
+		container_ActionDashboard.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		container_ActionDashboard.setBackground(Color.blue);
 
-		JPanel cropManagementActionPanel = new JPanel();
-		cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		/*_____________________ LAYOUT _____________________*/
+		container_SummmaryCard.setLayout(new BoxLayout(container_SummmaryCard, BoxLayout.X_AXIS));
+		container_ActionDashboard.setLayout(new GridLayout(2, 3, 5, 5));
 
-		// Create action buttons similar to tasks panel
-		JButton addCropBtn = new JButton("Add New Crop");
-		JButton editCropBtn = new JButton("Edit Crop");
-		JButton deleteCropBtn = new JButton("Delete Crop");
-		
-		addCropBtn.addActionListener(e -> showAddCropDialog());
-		editCropBtn.addActionListener(e -> showEditCropDialog());
-		deleteCropBtn.addActionListener(e -> deleteSelectedCrop());
+		/*_____________________ SUMMARY CARDS _____________________*/
+		JPanel summaryCard1 = new JPanel();
+		summaryCard1.setFont(new Font("Tahoma", Font.BOLD, 18));
+		summaryCard1.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		summaryCard1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		summaryCard1.setLayout(new BoxLayout(summaryCard1, BoxLayout.Y_AXIS));
 
-		// Style buttons
-		for (JButton btn : new JButton[]{addCropBtn, editCropBtn, deleteCropBtn}) {
-		    btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		    btn.setFocusPainted(false);
-		    btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		}
+		JPanel summaryCard2 = new JPanel();
+		summaryCard2.setFont(new Font("Tahoma", Font.BOLD, 18));
+		summaryCard2.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		summaryCard2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		summaryCard2.setLayout(new BoxLayout(summaryCard2, BoxLayout.Y_AXIS));
 
-		cropManagementActionPanel.add(addCropBtn);
-		cropManagementActionPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-		cropManagementActionPanel.add(editCropBtn);
-		cropManagementActionPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-		cropManagementActionPanel.add(deleteCropBtn);
+		/*_____________________ ADD CARDS _____________________*/
+		container_SummmaryCard.add(summaryCard1);
+		container_SummmaryCard.add(summaryCard2);
 
-		cropManagementPanel.add(tableListofCrops);
-		cropManagementPanel.add(createBorderGap());
-		cropManagementPanel.add(cropManagementActionPanel);
+		JLabel SumCardDescription1 = new JLabel("CROPS");
+		SumCardDescription1.setBounds(107, 10, 69, 25);
+		SumCardDescription1.setFont(new Font("Tahoma", Font.BOLD, 20));
+
+		JLabel SumCardDescription2 = new JLabel("TASKS");
+		SumCardDescription2.setBounds(105, 10, 66, 25);
+		SumCardDescription2.setFont(new Font("Tahoma", Font.BOLD, 20));
+
+		JScrollPane scrollPane1 = new JScrollPane();
+		scrollPane1.setBounds(10, 46, 264, 394);
+
+		JScrollPane scrollPane2 = new JScrollPane();
+		scrollPane2.setBounds(10, 46, 264, 394);
+
+		summaryCard1.add(SumCardDescription1);
+		summaryCard1.add(scrollPane1);
+
+		summaryCard2.add(SumCardDescription2);
+		summaryCard2.add(scrollPane2);
+
+		dashboardPanel.add(container_SummmaryCard);
+		dashboardPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+		dashboardPanel.add(container_ActionDashboard);
+
+	    /*===================== CROP MANAGEMENT =====================*/
+	    JPanel tableListofCrops = new JPanel();
+	    tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+	    tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+	    
+	    // Adding the table to the Crop Management panel using CropTableManager
+	    CropTableManager.addCropManagementTable(tableListofCrops);
+>>>>>>> main
+
+	    JPanel cropManagementActionPanel = new JPanel();
+	    cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+	    cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+	    cropManagementPanel.add(tableListofCrops);
+	    cropManagementPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+	    cropManagementPanel.add(cropManagementActionPanel);
 
 		/*===================== TASK =====================*/
-		JPanel tableListofTasks = new JPanel(new BorderLayout());
-		tableListofTasks.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
-		tableListofTasks.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-
-		// Adding the tasks table
-		TasksTableManager.addTasksTable(tableListofTasks);
+		JPanel tasksListTable = new JPanel();
+		tasksListTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+		tasksListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		JPanel tasksActionPanel = new JPanel();
-		tasksActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		tasksActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+		tasksActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
+<<<<<<< HEAD
 		// Action buttons
 		JButton addTaskBtn = new JButton("Add New Task");
 		JButton editTaskBtn = new JButton("Edit Task");
@@ -716,6 +764,13 @@ public class Application {
 
 		tasksPanel.add(tableListofTasks);
 		tasksPanel.add(createBorderGap());
+=======
+		// Adding the tasks table to the Tasks Management panel using TasksTableManager
+		TasksTableManager.addTasksTable(tasksPanel);
+		
+		tasksPanel.add(tasksListTable);
+		tasksPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+>>>>>>> main
 		tasksPanel.add(tasksActionPanel);
 		
 		/*===================== DASHBOARD =====================*/
@@ -783,6 +838,7 @@ public class Application {
 		dashboardPanel.add(refreshPanel);
 		
 		/*===================== INVENTORY =====================*/
+<<<<<<< HEAD
 		JPanel inventoryListTable = new JPanel(new BorderLayout());
 		inventoryListTable.setPreferredSize(new Dimension(0, 400));
 		InventoryTableManager.addInventoryTable(inventoryListTable);
@@ -809,17 +865,26 @@ public class Application {
 		inventoryActionPanel.add(addItemBtn);
 		inventoryActionPanel.add(editItemBtn);
 		inventoryActionPanel.add(deleteItemBtn);
+=======
+		JPanel inventoryListTable = new JPanel();
+		inventoryListTable.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+		inventoryListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+		JPanel inventoryActionPanel = new JPanel();
+		inventoryActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 500));
+		inventoryActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+>>>>>>> main
 
 		InventoryPanel.add(inventoryListTable);
-		InventoryPanel.add(createBorderGap());
+		InventoryPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		InventoryPanel.add(inventoryActionPanel);
 		/*===================== REPORT =====================*/
 		JPanel growthTrendPanel = new JPanel();
-		growthTrendPanel.setPreferredSize(new Dimension(0, 300));
+		growthTrendPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
 		growthTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		JPanel pestTrendPanel = new JPanel();
-		pestTrendPanel.setPreferredSize(new Dimension(0, 300));
+		pestTrendPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 300));
 		pestTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		// Adding the reports table to the Reports Management panel using ReportsTableManager
@@ -827,8 +892,8 @@ public class Application {
 		
 		/*_____________________ EXPORT _____________________*/
 		JPanel exportActionPanel = new JPanel();
-		exportActionPanel.setPreferredSize(new Dimension(0, 100));
-		exportActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		exportActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+		exportActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 		exportActionPanel.setLayout(new BorderLayout(0, 0));
 
 		/*_____________________ EXPORT BUTTON _____________________*/
@@ -839,9 +904,9 @@ public class Application {
 		exportActionPanel.add(export, BorderLayout.CENTER);
 
 		reportPanel.add(growthTrendPanel);
-		reportPanel.add(createBorderGap());
+		reportPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		reportPanel.add(pestTrendPanel);
-		reportPanel.add(createBorderGap());
+		reportPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		reportPanel.add(exportActionPanel);
 
 		/*===================== ADD TO CENTRAL PANEL =====================*/
