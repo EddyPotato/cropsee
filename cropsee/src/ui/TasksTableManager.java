@@ -3,38 +3,161 @@ package ui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import app.DBConnection;
 
 public class TasksTableManager {
+    public static DefaultTableModel model;
+    public static JTable tasksTable;
+
     public static void addTasksTable(JPanel tableContainer) {
         tableContainer.setLayout(new BorderLayout());
+        String[] columnNames = { "Task ID", "Task Name", "Assigned To", "Due Date", "Crop ID", "Priority", "Status" };
         
-        String[] columnNames = { "Task ID", "Task Name", "Assigned To", "Due Date", "Status" };
-        
-        Object[][] data = {
-            { "1", "Plant Seeds", "John", "2023-05-10", "Pending" },
-            { "2", "Water Plants", "Jane", "2023-05-12", "In Progress" },
-            { "3", "Harvest Crops", "Doe", "2023-06-15", "Completed" },
-        };
-
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+        model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-
-        JTable tasksTable = new JTable(model);
-        tasksTable.setAutoCreateRowSorter(true);
-        tasksTable.setFillsViewportHeight(true);
-
+        
+        tasksTable = new JTable(model);
+        refreshTaskTable();
+        
         JScrollPane tableScrollPane = new JScrollPane(tasksTable);
         tableScrollPane.setPreferredSize(new Dimension(700, 400));
         
-        // Styling
         tasksTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tasksTable.setRowHeight(25);
-        tasksTable.setIntercellSpacing(new Dimension(0, 0));
+        tasksTable.setFillsViewportHeight(true);
         
         tableContainer.add(tableScrollPane, BorderLayout.CENTER);
+    }
+
+    public static void refreshTaskTable() {
+        model.setRowCount(0);
+        List<Object[]> tasks = fetchTasksFromDatabase();
+        for (Object[] task : tasks) {
+            model.addRow(task);
+        }
+    }
+
+    private static List<Object[]> fetchTasksFromDatabase() {
+        List<Object[]> tasks = new ArrayList<>();
+        String query = "SELECT task_id, task_name, assigned_to, due_date, crop_id, priority, status FROM tasks";
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("task_id"),
+                    rs.getString("task_name"),
+                    rs.getString("assigned_to"),
+                    rs.getDate("due_date"),
+                    rs.getObject("crop_id"),  // Handle NULL values
+                    rs.getString("priority"),
+                    rs.getString("status")
+                };
+                tasks.add(row);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error loading tasks: " + e.getMessage());
+        }
+        return tasks;
+    }
+
+    public static void addTask(String taskName, String assignedTo, Date dueDate, 
+                             Integer cropId, String priority, String status) {
+        String query = "INSERT INTO tasks (task_name, assigned_to, due_date, crop_id, priority, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setString(1, taskName);
+            pstmt.setString(2, assignedTo);
+            pstmt.setDate(3, dueDate);
+            pstmt.setObject(4, cropId, Types.INTEGER);
+            pstmt.setString(5, priority);
+            pstmt.setString(6, status);
+            pstmt.executeUpdate();
+            refreshTaskTable();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error adding task: " + e.getMessage());
+        }
+    }
+
+    public static void updateTask(int taskId, String taskName, String assignedTo, Date dueDate, 
+                                Integer cropId, String priority, String status) {
+        String query = "UPDATE tasks SET task_name=?, assigned_to=?, due_date=?, " +
+                     "crop_id=?, priority=?, status=? WHERE task_id=?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setString(1, taskName);
+            pstmt.setString(2, assignedTo);
+            pstmt.setDate(3, dueDate);
+            pstmt.setObject(4, cropId, Types.INTEGER);
+            pstmt.setString(5, priority);
+            pstmt.setString(6, status);
+            pstmt.setInt(7, taskId);
+            pstmt.executeUpdate();
+            refreshTaskTable();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error updating task: " + e.getMessage());
+        }
+    }
+
+    public static void deleteTask(int taskId) {
+        String query = "DELETE FROM tasks WHERE task_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setInt(1, taskId);
+            pstmt.executeUpdate();
+            refreshTaskTable();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error deleting task: " + e.getMessage());
+        }
+    }
+
+    public static void markTaskComplete(int taskId) {
+        String query = "UPDATE tasks SET status = 'Completed' WHERE task_id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setInt(1, taskId);
+            pstmt.executeUpdate();
+            refreshTaskTable();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error marking task complete: " + e.getMessage());
+        }
+    }
+    public static void removeCompletedTasks() {
+        String query = "DELETE FROM tasks WHERE status = 'Completed'";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            int deletedRows = pstmt.executeUpdate();
+            refreshTaskTable();
+            JOptionPane.showMessageDialog(null, 
+                "Removed " + deletedRows + " completed tasks", 
+                "Cleanup Complete", JOptionPane.INFORMATION_MESSAGE);
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error removing tasks: " + e.getMessage());
+        }
     }
 }
