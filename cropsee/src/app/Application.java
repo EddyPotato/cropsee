@@ -329,6 +329,108 @@ public class Application {
 	    }
 	    return cropIds.toArray(new Integer[0]);
 	}
+	
+	private void showAddInventoryDialog() {
+	    JDialog dialog = new JDialog(mainFrame, "Add Inventory Item", true);
+	    dialog.setLayout(new GridLayout(4, 2, 5, 5));
+
+	    JTextField nameField = new JTextField();
+	    JTextField quantityField = new JTextField();
+	    JTextField priceField = new JTextField();
+
+	    dialog.add(new JLabel("Item Name:"));
+	    dialog.add(nameField);
+	    dialog.add(new JLabel("Quantity:"));
+	    dialog.add(quantityField);
+	    dialog.add(new JLabel("Price:"));
+	    dialog.add(priceField);
+
+	    JButton submitButton = new JButton("Add Item");
+	    submitButton.addActionListener(e -> {
+	        try {
+	            int quantity = Integer.parseInt(quantityField.getText());
+	            double price = Double.parseDouble(priceField.getText());
+	            InventoryTableManager.addItem(
+	                nameField.getText(),
+	                quantity,
+	                price
+	            );
+	            dialog.dispose();
+	        } catch (NumberFormatException ex) {
+	            JOptionPane.showMessageDialog(dialog, "Invalid number format!");
+	        }
+	    });
+
+	    dialog.add(submitButton);
+	    dialog.pack();
+	    dialog.setLocationRelativeTo(mainFrame);
+	    dialog.setVisible(true);
+	}
+
+	private void showEditInventoryDialog() {
+	    int selectedRow = InventoryTableManager.inventoryTable.getSelectedRow();
+	    if (selectedRow == -1) {
+	        JOptionPane.showMessageDialog(mainFrame, "Please select an item to edit!");
+	        return;
+	    }
+
+	    int itemId = (int) InventoryTableManager.model.getValueAt(selectedRow, 0);
+	    String name = (String) InventoryTableManager.model.getValueAt(selectedRow, 1);
+	    int quantity = (int) InventoryTableManager.model.getValueAt(selectedRow, 2);
+	    double price = (double) InventoryTableManager.model.getValueAt(selectedRow, 3);
+
+	    JDialog dialog = new JDialog(mainFrame, "Edit Inventory Item", true);
+	    dialog.setLayout(new GridLayout(4, 2, 5, 5));
+
+	    JTextField nameField = new JTextField(name);
+	    JTextField quantityField = new JTextField(String.valueOf(quantity));
+	    JTextField priceField = new JTextField(String.valueOf(price));
+
+	    dialog.add(new JLabel("Item Name:"));
+	    dialog.add(nameField);
+	    dialog.add(new JLabel("Quantity:"));
+	    dialog.add(quantityField);
+	    dialog.add(new JLabel("Price:"));
+	    dialog.add(priceField);
+
+	    JButton submitButton = new JButton("Update Item");
+	    submitButton.addActionListener(e -> {
+	        try {
+	            int newQuantity = Integer.parseInt(quantityField.getText());
+	            double newPrice = Double.parseDouble(priceField.getText());
+	            InventoryTableManager.updateItem(
+	                itemId,
+	                nameField.getText(),
+	                newQuantity,
+	                newPrice
+	            );
+	            dialog.dispose();
+	        } catch (NumberFormatException ex) {
+	            JOptionPane.showMessageDialog(dialog, "Invalid number format!");
+	        }
+	    });
+
+	    dialog.add(submitButton);
+	    dialog.pack();
+	    dialog.setLocationRelativeTo(mainFrame);
+	    dialog.setVisible(true);
+	}
+
+	private void deleteInventoryItem() {
+	    int selectedRow = InventoryTableManager.inventoryTable.getSelectedRow();
+	    if (selectedRow == -1) {
+	        JOptionPane.showMessageDialog(mainFrame, "Please select an item to delete!");
+	        return;
+	    }
+
+	    int confirm = JOptionPane.showConfirmDialog(mainFrame, 
+	        "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+	    
+	    if (confirm == JOptionPane.YES_OPTION) {
+	        int itemId = (int) InventoryTableManager.model.getValueAt(selectedRow, 0);
+	        InventoryTableManager.deleteItem(itemId);
+	    }
+	}
 
 	/*_____________________ METHODS _____________________*/
 	public static void main(String[] args) {
@@ -681,21 +783,36 @@ public class Application {
 		dashboardPanel.add(refreshPanel);
 		
 		/*===================== INVENTORY =====================*/
-		JPanel inventoryListTable = new JPanel();
+		JPanel inventoryListTable = new JPanel(new BorderLayout());
 		inventoryListTable.setPreferredSize(new Dimension(0, 400));
-		inventoryListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		InventoryTableManager.addInventoryTable(inventoryListTable);
 
 		JPanel inventoryActionPanel = new JPanel();
-		inventoryActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		inventoryActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+		inventoryActionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
-		// Adding the inventory table to the Inventory Management panel using InventoryTableManager
-		InventoryTableManager.addInventoryTable(InventoryPanel);
-		
+		JButton addItemBtn = new JButton("Add Item");
+		JButton editItemBtn = new JButton("Edit Item");
+		JButton deleteItemBtn = new JButton("Delete Item");
+
+		// Style buttons
+		for (JButton btn : new JButton[]{addItemBtn, editItemBtn, deleteItemBtn}) {
+		    btn.setFont(new Font("Tahoma", Font.BOLD, 14));
+		    btn.setFocusPainted(false);
+		    btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		}
+
+		// Add listeners
+		addItemBtn.addActionListener(e -> showAddInventoryDialog());
+		editItemBtn.addActionListener(e -> showEditInventoryDialog());
+		deleteItemBtn.addActionListener(e -> deleteInventoryItem());
+
+		inventoryActionPanel.add(addItemBtn);
+		inventoryActionPanel.add(editItemBtn);
+		inventoryActionPanel.add(deleteItemBtn);
+
 		InventoryPanel.add(inventoryListTable);
 		InventoryPanel.add(createBorderGap());
 		InventoryPanel.add(inventoryActionPanel);
-
 		/*===================== REPORT =====================*/
 		JPanel growthTrendPanel = new JPanel();
 		growthTrendPanel.setPreferredSize(new Dimension(0, 300));
