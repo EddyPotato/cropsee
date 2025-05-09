@@ -56,6 +56,7 @@ public class Application {
 		return Box.createRigidArea(new Dimension(0, 5));
 	}
 	
+	/*_____________________ CRUD - CROP MANAGEMENT _____________________*/
 	private void showAddCropDialog() {
 	    JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
 	    dialog.setLayout(new GridLayout(5, 2, 5, 5));
@@ -169,7 +170,7 @@ public class Application {
 	    }
 	}
 	
-
+	/*_____________________ CRUD - TASKS _____________________*/
 	private void showAddTaskDialog() {
 	    JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
 	    dialog.setLayout(new GridLayout(7, 2, 5, 5));
@@ -330,6 +331,7 @@ public class Application {
 	    return cropIds.toArray(new Integer[0]);
 	}
 	
+	/*_____________________ CRUD - INVENTORY MANAGEMENT _____________________*/
 	private void showAddInventoryDialog() {
 	    JDialog dialog = new JDialog(mainFrame, "Add Inventory Item", true);
 	    dialog.setLayout(new GridLayout(4, 2, 5, 5));
