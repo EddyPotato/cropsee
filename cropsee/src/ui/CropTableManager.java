@@ -31,6 +31,7 @@ public class CropTableManager {
         
         cropTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         cropTable.setRowHeight(25);
+        
         tableListofCrops.add(tableScrollPane, BorderLayout.CENTER);
     }
 

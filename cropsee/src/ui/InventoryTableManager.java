@@ -52,8 +52,10 @@ public class InventoryTableManager {
         
         JScrollPane scrollPane = new JScrollPane(inventoryTable);
         scrollPane.setPreferredSize(new Dimension(700, 400));
+        
         inventoryTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         inventoryTable.setRowHeight(25);
+        
         panel.add(scrollPane, BorderLayout.CENTER);
     }
 
