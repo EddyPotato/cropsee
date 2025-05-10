@@ -52,11 +52,11 @@ import java.io.File;
 
 import ui.*; // import all CONTENT OF TABS
 
+@SuppressWarnings("unused")
 public class Application {
 	/*_____________________ CLASS-LEVEL _____________________*/
 	private JFrame mainFrame;
 	private CardLayout cardLayout = new CardLayout();
-	@SuppressWarnings("unused")
 	private Connection connection; // IT IS USED BALIW LANG ECLIPSE
 	private JTabbedPane reportTabs;
 
@@ -68,6 +68,7 @@ public class Application {
 
 	/*===================== CRUD METHODS =====================*/
 	/*_____________________ CRUD - CROP MANAGEMENT _____________________*/
+	/*--------------------- ADD CROP ---------------------*/
 	private void showAddCropDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
 		JPanel contentPanel = new JPanel(new GridLayout(5, 2, 5, 5));
@@ -117,6 +118,7 @@ public class Application {
 		dialog.setVisible(true); // TO BE SEEN, USUALLY NOT SEEN MAYBE A DEVELOPER TOOL OPTION PERHAPS BUT WHY DO THAT THOUGH...
 	}
 
+	/*--------------------- EDIT CROP ---------------------*/
 	// SAME PROCESS BUT...
 	private void showEditCropDialog() {
 		// SEES IF THERE IS SELECTED ROW, CAN'T EDIT ON NOTHING RIGHT?
@@ -197,6 +199,7 @@ public class Application {
 		dialog.setVisible(true);
 	}
 
+	/*--------------------- DELETE CROP ---------------------*/
 	// SAME PROCESS
 	private void deleteSelectedCrop() {
 		int selectedRow = CropTableManager.cropTable.getSelectedRow();
@@ -219,9 +222,11 @@ public class Application {
 	}
 
 	/*_____________________ CRUD - TASKS _____________________*/
+	/*--------------------- ADD TASK ---------------------*/
 	private void showAddTaskDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
-		dialog.setLayout(new GridLayout(7, 2, 5, 5));
+		JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5));
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
 		JTextField taskNameField = new JTextField();
 		JTextField assignedToField = new JTextField();
@@ -231,20 +236,22 @@ public class Application {
 		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
 		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
 
-		dialog.add(new JLabel("Task Name:"));
-		dialog.add(taskNameField);
-		dialog.add(new JLabel("Assigned To:"));
-		dialog.add(assignedToField);
-		dialog.add(new JLabel("Due Date (YYYY-MM-DD):"));
-		dialog.add(dueDateField);
-		dialog.add(new JLabel("Crop ID (Optional):"));
-		dialog.add(cropIdCombo);
-		dialog.add(new JLabel("Priority:"));
-		dialog.add(priorityCombo);
-		dialog.add(new JLabel("Status:"));
-		dialog.add(statusCombo);
+		contentPanel.add(new JLabel("Task Name:"));
+		contentPanel.add(taskNameField);
+		contentPanel.add(new JLabel("Assigned To:"));
+		contentPanel.add(assignedToField);
+		contentPanel.add(new JLabel("Due Date (YYYY-MM-DD):"));
+		contentPanel.add(dueDateField);
+		contentPanel.add(new JLabel("Crop ID (Optional):"));
+		contentPanel.add(cropIdCombo);
+		contentPanel.add(new JLabel("Priority:"));
+		contentPanel.add(priorityCombo);
+		contentPanel.add(new JLabel("Status:"));
+		contentPanel.add(statusCombo);
 
 		JButton submitButton = new JButton("Add Task");
+		submitButton.setFocusPainted(false);
+		
 		submitButton.addActionListener(e -> {
 			try {
 				Date dueDate = Date.valueOf(dueDateField.getText());
@@ -263,12 +270,16 @@ public class Application {
 			}
 		});
 
-		dialog.add(submitButton);
+		contentPanel.add(new JPanel());
+		contentPanel.add(submitButton);
+		
+		dialog.setContentPane(contentPanel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(mainFrame);
 		dialog.setVisible(true);
 	}
-
+	
+	/*--------------------- EDIT TASK ---------------------*/
 	private void showEditTaskDialog() {
 		int selectedRow = TasksTableManager.tasksTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -285,7 +296,8 @@ public class Application {
 		String status = (String) TasksTableManager.model.getValueAt(selectedRow, 6);
 
 		JDialog dialog = new JDialog(mainFrame, "Edit Task", true);
-		dialog.setLayout(new GridLayout(7, 2, 5, 5));
+		JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5));
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
 		// MAKES THE TEXTFIELDS AND THE JCOMBOBOX
 		JTextField taskNameField = new JTextField(taskName);
@@ -298,20 +310,22 @@ public class Application {
 		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
 		statusCombo.setSelectedItem(status);
 
-		dialog.add(new JLabel("Task Name:"));
-		dialog.add(taskNameField);
-		dialog.add(new JLabel("Assigned To:"));
-		dialog.add(assignedToField);
-		dialog.add(new JLabel("Due Date (YYYY-MM-DD):"));
-		dialog.add(dueDateField);
-		dialog.add(new JLabel("Crop ID (Optional):"));
-		dialog.add(cropIdCombo);
-		dialog.add(new JLabel("Priority:"));
-		dialog.add(priorityCombo);
-		dialog.add(new JLabel("Status:"));
-		dialog.add(statusCombo);
+		contentPanel.add(new JLabel("Task Name:"));
+		contentPanel.add(taskNameField);
+		contentPanel.add(new JLabel("Assigned To:"));
+		contentPanel.add(assignedToField);
+		contentPanel.add(new JLabel("Due Date (YYYY-MM-DD):"));
+		contentPanel.add(dueDateField);
+		contentPanel.add(new JLabel("Crop ID (Optional):"));
+		contentPanel.add(cropIdCombo);
+		contentPanel.add(new JLabel("Priority:"));
+		contentPanel.add(priorityCombo);
+		contentPanel.add(new JLabel("Status:"));
+		contentPanel.add(statusCombo);
 
 		JButton submitButton = new JButton("Update Task");
+		submitButton.setFocusPainted(false);
+		
 		submitButton.addActionListener(e -> {
 			try {
 				Date newDueDate = Date.valueOf(dueDateField.getText());
@@ -330,12 +344,16 @@ public class Application {
 			}
 		});
 
-		dialog.add(submitButton);
+		contentPanel.add(new JPanel());
+		contentPanel.add(submitButton);
+		
+		dialog.setContentPane(contentPanel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(mainFrame);
 		dialog.setVisible(true);
 	}
 
+	/*--------------------- DELETE TASK ---------------------*/
 	private void deleteSelectedTask() {
 		int selectedRow = TasksTableManager.tasksTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -352,6 +370,7 @@ public class Application {
 		}
 	}
 
+	/*--------------------- COMPLETE TASK ---------------------*/
 	private void markTaskComplete() {
 		int selectedRow = TasksTableManager.tasksTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -359,10 +378,16 @@ public class Application {
 			return;
 		}
 
-		int taskId = (int) TasksTableManager.model.getValueAt(selectedRow, 0);
-		TasksTableManager.markTaskComplete(taskId);
+		int confirm = JOptionPane.showConfirmDialog(mainFrame, 
+				"Are you sure you want to change the status of this task to complete?", "Confirm Completion", JOptionPane.YES_NO_OPTION);
+
+		if (confirm == JOptionPane.YES_OPTION) {
+			int taskId = (int) TasksTableManager.model.getValueAt(selectedRow, 0);
+			TasksTableManager.markTaskComplete(taskId);
+		}
 	}
 
+	/*--------------------- FETCH CROP_ID ---------------------*/
 	private Integer[] fetchCropIds() {
 		List<Integer> cropIds = new ArrayList<>();
 		String query = "SELECT crop_id FROM crops";
@@ -381,6 +406,7 @@ public class Application {
 	}
 
 	/*_____________________ CRUD - INVENTORY MANAGEMENT _____________________*/
+	/*--------------------- ADD INVENTORY ---------------------*/
 	private void showAddInventoryDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add Inventory Item", true);
 		JPanel contentPanel = new JPanel(new GridLayout(4, 2, 5, 5));
@@ -426,6 +452,7 @@ public class Application {
 		dialog.setVisible(true);
 	}
 
+	/*--------------------- EDIT INVENTORY ---------------------*/
 	private void showEditInventoryDialog() {
 		int selectedRow = InventoryTableManager.inventoryTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -480,6 +507,7 @@ public class Application {
 		dialog.setVisible(true);
 	}
 
+	/*--------------------- DELETE INVENTORY ---------------------*/
 	private void deleteInventoryItem() {
 		int selectedRow = InventoryTableManager.inventoryTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -496,6 +524,8 @@ public class Application {
 		}
 	}
 	
+	/*_____________________ CRUD - REPORTS _____________________*/
+	/*--------------------- CREATE CROP REPORT ---------------------*/
 	private JPanel createCropReportTab() {
 	    JPanel panel = new JPanel(new BorderLayout());
 	    
@@ -515,6 +545,7 @@ public class Application {
 	    return panel;
 	}
 	
+	/*--------------------- CREATE REPORT REPORT ---------------------*/
 	private JPanel createTaskReportTab() {
 	    JPanel panel = new JPanel(new BorderLayout());
 	    
@@ -532,6 +563,7 @@ public class Application {
 	    return panel;
 	}
 	
+	/*--------------------- CREATE INVENTORY REPORT ---------------------*/
 	private JPanel createInventoryReportTab() {
 	    JPanel panel = new JPanel(new BorderLayout());
 	    
@@ -655,7 +687,6 @@ public class Application {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private void initialize() {
 		/*_____________________ DATABASE _____________________*/
 		connectToDatabase(); // Establish database connection first
