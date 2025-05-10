@@ -48,7 +48,7 @@ public class Application {
 	private JFrame mainFrame;
 	private CardLayout cardLayout = new CardLayout();
 	@SuppressWarnings("unused")
-	private Connection connection; // IT IS USED BALIW LANG ECLIPSE
+	private Connection connection;
 
 	/*_____________________ REUSABLE METHODS _____________________*/
 
@@ -637,7 +637,7 @@ public class Application {
 
 		JPanel cropManagementActionPanel = new JPanel();
 		cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
-		cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		// Create action buttons similar to tasks panel
 		JButton addCropBtn = new JButton("Add New Crop");
