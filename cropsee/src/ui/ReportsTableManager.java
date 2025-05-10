@@ -4,6 +4,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -26,6 +28,14 @@ public class ReportsTableManager {
         };
 
         reportsTable = new JTable(model);
+        
+        // Center all columns
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < reportsTable.getColumnCount(); i++) {
+        	reportsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        
         reportsTable.getTableHeader().setReorderingAllowed(false);
         refreshReports(); // Load initial data
 

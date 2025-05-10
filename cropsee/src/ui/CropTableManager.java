@@ -1,6 +1,7 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
@@ -37,6 +38,14 @@ public class CropTableManager {
 
 		// MAKING THE JAVA TABLE USING CLASS-LEVEL VARIABLE WHEREIN THE TABLE VALUES ARE ON THE MODEL ABOVE
 		cropTable = new JTable(model);
+		
+		// Center all columns
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		for (int i = 0; i < cropTable.getColumnCount(); i++) {
+			cropTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		
 		cropTable.getTableHeader().setReorderingAllowed(false);
 		refreshCropTable(); // REFRESHES THE TABLE EACH TIME
 
