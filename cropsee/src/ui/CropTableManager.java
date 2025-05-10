@@ -37,6 +37,7 @@ public class CropTableManager {
 
 		// MAKING THE JAVA TABLE USING CLASS-LEVEL VARIABLE WHEREIN THE TABLE VALUES ARE ON THE MODEL ABOVE
 		cropTable = new JTable(model);
+		cropTable.getTableHeader().setReorderingAllowed(false);
 		refreshCropTable(); // REFRESHES THE TABLE EACH TIME
 
 		// MAKES THE TABLE SCROLLABLE ESPECIALLY IF MANY

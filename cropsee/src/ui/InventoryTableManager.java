@@ -43,6 +43,7 @@ public class InventoryTableManager {
         };
         
         inventoryTable = new JTable(model);
+        inventoryTable.getTableHeader().setReorderingAllowed(false);
         refreshInventoryTable();
         
         DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();

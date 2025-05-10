@@ -27,6 +27,7 @@ public class TasksTableManager {
         };
         
         tasksTable = new JTable(model);
+        tasksTable.getTableHeader().setReorderingAllowed(false);
         refreshTaskTable();
         
         JScrollPane tableScrollPane = new JScrollPane(tasksTable);
