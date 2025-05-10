@@ -43,6 +43,7 @@ public class InventoryTableManager {
         };
         
         inventoryTable = new JTable(model);
+        inventoryTable.getTableHeader().setReorderingAllowed(false);
         refreshInventoryTable();
         
         DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
@@ -56,8 +57,8 @@ public class InventoryTableManager {
         JScrollPane scrollPane = new JScrollPane(inventoryTable);
         scrollPane.setPreferredSize(new Dimension(700, 400));
         
-        inventoryTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
-        inventoryTable.setRowHeight(25);
+        inventoryTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 16));
+        inventoryTable.setRowHeight(30);
         
         panel.add(scrollPane, BorderLayout.CENTER);
     }

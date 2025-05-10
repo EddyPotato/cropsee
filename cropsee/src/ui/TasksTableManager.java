@@ -27,13 +27,14 @@ public class TasksTableManager {
         };
         
         tasksTable = new JTable(model);
+        tasksTable.getTableHeader().setReorderingAllowed(false);
         refreshTaskTable();
         
         JScrollPane tableScrollPane = new JScrollPane(tasksTable);
         tableScrollPane.setPreferredSize(new Dimension(700, 400));
         
-        tasksTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
-        tasksTable.setRowHeight(25);
+        tasksTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 16));
+        tasksTable.setRowHeight(30);
         
         tableContainer.add(tableScrollPane, BorderLayout.CENTER);
     }

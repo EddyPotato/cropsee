@@ -26,6 +26,7 @@ public class ReportsTableManager {
         };
 
         reportsTable = new JTable(model);
+        reportsTable.getTableHeader().setReorderingAllowed(false);
         refreshReports(); // Load initial data
 
         JScrollPane scrollPane = new JScrollPane(reportsTable);
