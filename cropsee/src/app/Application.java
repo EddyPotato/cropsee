@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
@@ -39,7 +40,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.function.Supplier;
+
 
 import ui.*; // import all CONTENT OF TABS
 
@@ -49,6 +54,7 @@ public class Application {
 	private CardLayout cardLayout = new CardLayout();
 	@SuppressWarnings("unused")
 	private Connection connection; // IT IS USED BALIW LANG ECLIPSE
+	private JTabbedPane reportTabs;
 
 	/*_____________________ REUSABLE METHODS _____________________*/
 
@@ -431,6 +437,90 @@ public class Application {
 	        InventoryTableManager.deleteItem(itemId);
 	    }
 	}
+	
+	private JPanel createCropReportTab() {
+	    JPanel panel = new JPanel(new BorderLayout());
+	    
+	    // Chart
+	    Map<String, Integer> cropData = CropTableManager.getCropStatusData();
+	    BarChartPanel chart = new BarChartPanel(cropData);
+	    
+	    // Controls
+	    JPanel controls = new JPanel();
+	    JButton refresh = new JButton("Refresh Crops");
+	    refresh.addActionListener(e -> refreshChart(chart, CropTableManager::getCropStatusData));
+	    
+	    controls.add(refresh);
+	    
+	    panel.add(controls, BorderLayout.NORTH);
+	    panel.add(chart, BorderLayout.CENTER);
+	    return panel;
+	}
+	
+	private JPanel createTaskReportTab() {
+	    JPanel panel = new JPanel(new BorderLayout());
+	    
+	    Map<String, Integer> taskData = TasksTableManager.getTaskStatusData();
+	    BarChartPanel chart = new BarChartPanel(taskData);
+	    
+	    JPanel controls = new JPanel();
+	    JButton refresh = new JButton("Refresh Tasks");
+	    refresh.addActionListener(e -> refreshChart(chart, TasksTableManager::getTaskStatusData));
+	    
+	    controls.add(refresh);
+	    
+	    panel.add(controls, BorderLayout.NORTH);
+	    panel.add(chart, BorderLayout.CENTER);
+	    return panel;
+	}
+	
+	private JPanel createInventoryReportTab() {
+	    JPanel panel = new JPanel(new BorderLayout());
+	    
+	    // Convert to String-Integer map for BarChartPanel
+	    Map<String, Integer> inventoryData = new LinkedHashMap<>();
+	    InventoryTableManager.getInventoryValueData().forEach((k,v) -> 
+	        inventoryData.put(k, v.intValue())
+	    );
+	    
+	    BarChartPanel chart = new BarChartPanel(inventoryData);
+	    
+	    JPanel controls = new JPanel();
+	    JButton refresh = new JButton("Refresh Inventory");
+	    refresh.addActionListener(e -> refreshChart(chart, () -> {
+	        Map<String, Integer> newData = new LinkedHashMap<>();
+	        InventoryTableManager.getInventoryValueData().forEach((k,v) -> 
+	            newData.put(k, v.intValue())
+	        );
+	        return newData;
+	    }));
+	    
+	    controls.add(refresh);
+	    
+	    panel.add(controls, BorderLayout.NORTH);
+	    panel.add(chart, BorderLayout.CENTER);
+	    return panel;
+	}
+	
+	private void exportCropData() {
+	    JOptionPane.showMessageDialog(mainFrame, "Exporting crop data...");
+	}
+
+	private void exportTaskData() {
+	    JOptionPane.showMessageDialog(mainFrame, "Exporting task data...");
+	}
+
+	private void exportInventoryData() {
+	    JOptionPane.showMessageDialog(mainFrame, "Exporting inventory data...");
+	}
+	
+	// Generic refresh helper
+	private void refreshChart(BarChartPanel chartPanel, Supplier<Map<String, Integer>> dataSupplier) {
+	    chartPanel.setData(dataSupplier.get());
+	    chartPanel.revalidate();
+	    chartPanel.repaint();
+	}
+
 
 	/*_____________________ METHODS _____________________*/
 	public static void main(String[] args) {
@@ -601,7 +691,7 @@ public class Application {
 		JPanel cropManagementPanel = new JPanel();
 		JPanel tasksPanel = new JPanel();
 		JPanel InventoryPanel = new JPanel();
-		JPanel reportPanel = new JPanel();
+		JPanel reportPanel = new JPanel(new BorderLayout());
 
 		/*_____________________ LAYOUT _____________________*/
 		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
@@ -813,37 +903,46 @@ public class Application {
 		InventoryPanel.add(inventoryListTable);
 		InventoryPanel.add(createBorderGap());
 		InventoryPanel.add(inventoryActionPanel);
+		
 		/*===================== REPORT =====================*/
-		JPanel growthTrendPanel = new JPanel();
-		growthTrendPanel.setPreferredSize(new Dimension(0, 300));
-		growthTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		reportTabs = new JTabbedPane();
 
-		JPanel pestTrendPanel = new JPanel();
-		pestTrendPanel.setPreferredSize(new Dimension(0, 300));
-		pestTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		// 1. Crop Reports Tab
+		JPanel cropReportTab = createCropReportTab(); // Already contains 1 chart
+		reportTabs.addTab("Crops", cropReportTab);
 
-		// Adding the reports table to the Reports Management panel using ReportsTableManager
-		ReportsTableManager.addReportsTable(reportPanel);
+		// 2. Task Reports Tab
+		JPanel taskReportTab = createTaskReportTab(); // Already contains 1 chart
+		reportTabs.addTab("Tasks", taskReportTab);
+
+		// 3. Inventory Reports Tab
+		JPanel inventoryReportTab = createInventoryReportTab(); // Already contains 1 chart
+		reportTabs.addTab("Inventory", inventoryReportTab);
+
+		// Add tabs to the report panel
+		reportPanel.add(reportTabs, BorderLayout.CENTER);
 		
 		/*_____________________ EXPORT _____________________*/
-		JPanel exportActionPanel = new JPanel();
-		exportActionPanel.setPreferredSize(new Dimension(0, 100));
-		exportActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-		exportActionPanel.setLayout(new BorderLayout(0, 0));
+		JPanel exportPanel = new JPanel();
+		JButton exportBtn = new JButton("Export Current Report");
+		exportBtn.setFont(new Font("Tahoma", Font.BOLD, 16));
+		exportBtn.addActionListener(e -> {
+		    int selectedTab = reportTabs.getSelectedIndex();
+		    switch(selectedTab) {
+		        case 0: 
+		            exportCropData();
+		            break;
+		        case 1: 
+		            exportTaskData();
+		            break;
+		        case 2: 
+		            exportInventoryData();
+		            break;
+		    }
+		});
 
-		/*_____________________ EXPORT BUTTON _____________________*/
-		JButton export = new JButton("EXPORT STATISTICS");
-		export.setFont(new Font("Tahoma", Font.BOLD, 20));
-		export.setSize(500, 500);
-		export.setFocusPainted(false);
-		exportActionPanel.add(export, BorderLayout.CENTER);
-
-		reportPanel.add(growthTrendPanel);
-		reportPanel.add(createBorderGap());
-		reportPanel.add(pestTrendPanel);
-		reportPanel.add(createBorderGap());
-		reportPanel.add(exportActionPanel);
-
+		exportPanel.add(exportBtn);
+		reportPanel.add(exportPanel, BorderLayout.SOUTH); 
 		/*===================== ADD TO CENTRAL PANEL =====================*/
 		mainPanel.add(dashboardPanel, "dashboard");
 		mainPanel.add(cropManagementPanel, "management");

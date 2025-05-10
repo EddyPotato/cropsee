@@ -9,7 +9,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import app.DBConnection;
 
 public class InventoryTableManager {
@@ -133,5 +136,22 @@ public class InventoryTableManager {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error deleting item: " + e.getMessage());
         }
+    }
+    
+    public static Map<String, Double> getInventoryValueData() {
+        Map<String, Double> data = new LinkedHashMap<>();
+        String query = "SELECT item_name, (quantity * price) AS value FROM inventory";
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            
+            while (rs.next()) {
+                data.put(rs.getString("item_name"), rs.getDouble("value"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error loading inventory data: " + e.getMessage());
+        }
+        return data;
     }
 }
