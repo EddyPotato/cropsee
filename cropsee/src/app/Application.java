@@ -366,7 +366,7 @@ public class Application {
 					quantity,
 					price
 				);
-				dialog.dispose();
+				dialog.dispose(); // exit dialog
 			} catch (NumberFormatException ex) {
 				JOptionPane.showMessageDialog(dialog, "Invalid number format!");
 			}
