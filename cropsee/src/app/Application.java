@@ -540,13 +540,19 @@ public class Application {
 		BarChartPanel chart = new BarChartPanel(cropData);
 
 		// Controls
-		JPanel controls = new JPanel();
-		JButton refresh = new JButton("Refresh Crops");
+		JPanel controls = new JPanel(new BorderLayout());
+		controls.setBackground(Color.white);
+		controls.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 50));
+		controls.setPreferredSize(new Dimension(200, 100));
+		
+		JButton refresh = new JButton("Refresh Inventory");
+		refresh.setBackground(Color.decode("#F9A825"));
+		refresh.setForeground(Color.decode("#FFFFFF"));
 		refresh.addActionListener(e -> refreshChart(chart, CropTableManager::getCropStatusData));
 
-		controls.add(refresh);
+		controls.add(refresh, BorderLayout.EAST);
 
-		panel.add(controls, BorderLayout.NORTH);
+		panel.add(controls, BorderLayout.SOUTH);
 		panel.add(chart, BorderLayout.CENTER);
 		return panel;
 	}
@@ -558,13 +564,19 @@ public class Application {
 		Map<String, Integer> taskData = TasksTableManager.getTaskStatusData();
 		BarChartPanel chart = new BarChartPanel(taskData);
 
-		JPanel controls = new JPanel();
-		JButton refresh = new JButton("Refresh Tasks");
+		JPanel controls = new JPanel(new BorderLayout());
+		controls.setBackground(Color.white);
+		controls.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 50));
+		controls.setPreferredSize(new Dimension(200, 100));
+		
+		JButton refresh = new JButton("Refresh Inventory");
+		refresh.setBackground(Color.decode("#F9A825"));
+		refresh.setForeground(Color.decode("#FFFFFF"));
 		refresh.addActionListener(e -> refreshChart(chart, TasksTableManager::getTaskStatusData));
 
-		controls.add(refresh);
+		controls.add(refresh, BorderLayout.EAST);
 
-		panel.add(controls, BorderLayout.NORTH);
+		panel.add(controls, BorderLayout.SOUTH);
 		panel.add(chart, BorderLayout.CENTER);
 		return panel;
 	}
