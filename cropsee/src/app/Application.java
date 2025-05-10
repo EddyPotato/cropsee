@@ -711,9 +711,9 @@ public class Application {
 		JPanel mainPanel = new JPanel(cardLayout);
 
 		/*_____________________ COLOR _____________________*/
-		topPanel.setBackground(Color.magenta);
-		sidePanel.setBackground(Color.orange);
-		mainPanel.setBackground(Color.yellow);
+		topPanel.setBackground(Color.decode("#2C3E50"));
+		sidePanel.setBackground(Color.decode("#34495E"));
+		mainPanel.setBackground(Color.decode("#F5F7FA"));
 
 		/*_____________________ PREFERRED SIZE _____________________*/
 		int logo_size = 50;
@@ -734,7 +734,7 @@ public class Application {
 
 		/*===================== TOP PANEL =====================*/
 		/*_____________________ LOGO _____________________*/
-		ImageIcon originalImage = new ImageIcon(getClass().getResource("/resources/Logo.jpg"));
+		ImageIcon originalImage = new ImageIcon(getClass().getResource("/resources/Logo.png"));
 		Image scaledImage = originalImage.getImage().getScaledInstance(logo_size, logo_size, Image.SCALE_SMOOTH);
 		ImageIcon resizedImage = new ImageIcon(scaledImage);
 
@@ -784,31 +784,33 @@ public class Application {
 		JButton reportsBtn = new JButton("<html>Reports</html>");
 
 		/*_____________________ BUTTON CUSTOMIZATION _____________________*/
-		dashboardBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		dashboardBtn.setFocusPainted(false);
-		dashboardBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		JButton[] sideButtons = {dashboardBtn, manageBtn, tasksBtn, monitorBtn, reportsBtn};
+		
+		Color normalColor = Color.decode("#27AE60");
+		Color hoverColor = Color.decode("#2ECC71");
+		
+		for (JButton btn : sideButtons) {
+			btn.setFont(new Font("Tahoma", Font.BOLD, 18));
+			btn.setFocusPainted(false);
+			btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			btn.setBackground(normalColor); // BACKGROUND COLOR
+			btn.setForeground(Color.decode("#FFFFFF")); // TEXT COLOR
+			
+			// Hover effect using MouseListener
+		    btn.addMouseListener(new java.awt.event.MouseAdapter() {
+		        @Override
+		        public void mouseEntered(java.awt.event.MouseEvent evt) {
+		            btn.setBackground(hoverColor);
+		        }
 
-		manageBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		manageBtn.setFocusPainted(false);
-		manageBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-		tasksBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		tasksBtn.setFocusPainted(false);
-		tasksBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-		monitorBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		monitorBtn.setFocusPainted(false);
-		monitorBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-		reportsBtn.setFont(new Font("Tahoma", Font.BOLD, 18));
-		reportsBtn.setFocusPainted(false);
-		reportsBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-		sidePanel.add(dashboardBtn);
-		sidePanel.add(manageBtn);
-		sidePanel.add(tasksBtn);
-		sidePanel.add(monitorBtn);
-		sidePanel.add(reportsBtn);
+		        @Override
+		        public void mouseExited(java.awt.event.MouseEvent evt) {
+		            btn.setBackground(normalColor);
+		        }
+		    });
+			
+			sidePanel.add(btn);
+		}
 
 		/*===================== CENTRAL PANEL =====================*/
 		// None (Check "MASTER PANEL - INFO")
