@@ -713,7 +713,7 @@ public class Application {
 		/*_____________________ COLOR _____________________*/
 		topPanel.setBackground(Color.decode("#2C3E50"));
 		sidePanel.setBackground(Color.decode("#34495E"));
-		mainPanel.setBackground(Color.decode("#F5F7FA"));
+		mainPanel.setBackground(Color.decode("#34495E"));
 
 		/*_____________________ PREFERRED SIZE _____________________*/
 		int logo_size = 50;
@@ -777,38 +777,38 @@ public class Application {
 
 		/*===================== SIDE PANEL =====================*/
 		/*_____________________ BUTTON TEXT _____________________*/
-		JButton dashboardBtn = new JButton("<html>Dashboard</html>");
-		JButton manageBtn = new JButton("<html><center>Crop<br>Management</center></html>");
-		JButton tasksBtn = new JButton("<html>Tasks</html>");
-		JButton monitorBtn = new JButton("<html><center>Inventory Management</center></html>");
-		JButton reportsBtn = new JButton("<html>Reports</html>");
+		JButton dashboardBtn = new JButton("<html>DASHBOARD</html>");
+		JButton manageBtn = new JButton("<html><center>CROP<br>MANAGEMENT</center></html>");
+		JButton tasksBtn = new JButton("<html>TASKS</html>");
+		JButton monitorBtn = new JButton("<html><center>INVENTORY MANAGEMENT</center></html>");
+		JButton reportsBtn = new JButton("<html>REPORTS</html>");
 
 		/*_____________________ BUTTON CUSTOMIZATION _____________________*/
 		JButton[] sideButtons = {dashboardBtn, manageBtn, tasksBtn, monitorBtn, reportsBtn};
-		
+
 		Color normalColor = Color.decode("#27AE60");
 		Color hoverColor = Color.decode("#2ECC71");
-		
+
 		for (JButton btn : sideButtons) {
 			btn.setFont(new Font("Tahoma", Font.BOLD, 18));
 			btn.setFocusPainted(false);
 			btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			btn.setBackground(normalColor); // BACKGROUND COLOR
 			btn.setForeground(Color.decode("#FFFFFF")); // TEXT COLOR
-			
-			// Hover effect using MouseListener
-		    btn.addMouseListener(new java.awt.event.MouseAdapter() {
-		        @Override
-		        public void mouseEntered(java.awt.event.MouseEvent evt) {
-		            btn.setBackground(hoverColor);
-		        }
 
-		        @Override
-		        public void mouseExited(java.awt.event.MouseEvent evt) {
-		            btn.setBackground(normalColor);
-		        }
-		    });
-			
+			// Hover effect using MouseListener
+			btn.addMouseListener(new java.awt.event.MouseAdapter() {
+				@Override
+				public void mouseEntered(java.awt.event.MouseEvent evt) {
+					btn.setBackground(hoverColor);
+				}
+
+				@Override
+				public void mouseExited(java.awt.event.MouseEvent evt) {
+					btn.setBackground(normalColor);
+				}
+			});
+
 			sidePanel.add(btn);
 		}
 
@@ -835,11 +835,11 @@ public class Application {
 		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
 
 		/*_____________________ COLOR _____________________*/
-		dashboardPanel.setBackground(Color.white);
-		cropManagementPanel.setBackground(Color.white);
-		tasksPanel.setBackground(Color.white);
-		InventoryPanel.setBackground(Color.white);
-		reportPanel.setBackground(Color.white);
+		dashboardPanel.setBackground(Color.decode("#34495E"));
+		cropManagementPanel.setBackground(Color.decode("#34495E"));
+		tasksPanel.setBackground(Color.decode("#34495E"));
+		InventoryPanel.setBackground(Color.decode("#34495E"));
+		reportPanel.setBackground(Color.decode("#34495E"));
 
 		/*_____________________ MARGIN _____________________*/
 		dashboardPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // top, left, bottom, right
@@ -942,70 +942,64 @@ public class Application {
 		tasksPanel.add(createBorderGap());
 		tasksPanel.add(tasksActionPanel);
 
+		
+		// THE REASON BAKIT NASA BABA TO KAYSA UNA IS NEED NIYANG BASA YUNG MGA TABLES AND DOING THAT NEEDS THE TWO NEEDED TABLES MAUNA SA KANYA
 		/*===================== DASHBOARD =====================*/
-		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
-		dashboardPanel.setBackground(Color.white);
-
-		// Container for tables (side-by-side)
+		/*_____________________ MAIN CONTAINER _____________________*/
 		JPanel tablesContainer = new JPanel();
 		tablesContainer.setLayout(new GridLayout(1, 2, 8, 8)); // 1 row, 2 columns, 8px gaps
 		tablesContainer.setBackground(Color.white);
 
-		// Crop Table Panel
-		JPanel cropTablePanel = new JPanel(new BorderLayout());
-		TitledBorder cropBorder = BorderFactory.createTitledBorder("Crops");
-		cropBorder.setTitleJustification(TitledBorder.CENTER); // Center align title
-		cropTablePanel.setBorder(cropBorder);
-		JTable dashboardCropTable = new JTable(CropTableManager.model);
-		dashboardCropTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
-		dashboardCropTable.setRowHeight(25);
-		JScrollPane cropScroll = new JScrollPane(dashboardCropTable);
-		cropTablePanel.add(cropScroll);
+		/*_____________________ CROP CONTAINER (FOR BORDER) _____________________*/
+		JPanel cropContainer = new JPanel(new BorderLayout());
+		TitledBorder cropBorder = BorderFactory.createTitledBorder("TASKS"); // BORDER NAME
+		cropBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
+		cropContainer.setBorder(cropBorder);
 
-		// Tasks Table Panel
-		JPanel tasksTablePanel = new JPanel(new BorderLayout());
-		TitledBorder taskBorder = BorderFactory.createTitledBorder("Tasks");
-		taskBorder.setTitleJustification(TitledBorder.CENTER); // Center align title
-		tasksTablePanel.setBorder(taskBorder);
-		JTable dashboardTaskTable = new JTable(TasksTableManager.model);
-		dashboardTaskTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
-		dashboardTaskTable.setRowHeight(25);
-		JScrollPane taskScroll = new JScrollPane(dashboardTaskTable);
-		tasksTablePanel.add(taskScroll);
+		/*_____________________ CROP TABLE _____________________*/
+		JTable initialCropTable = new JTable(CropTableManager.model);
+		initialCropTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 12));
+		initialCropTable.setRowHeight(25);
+		JScrollPane scrollableCropTable = new JScrollPane(initialCropTable);
+		cropContainer.add(scrollableCropTable);
 
-		// Add tables to container
-		tablesContainer.add(cropTablePanel);
-		tablesContainer.add(tasksTablePanel);
+		/*_____________________ TASK CONTAINER _____________________*/
+		JPanel taskContainer = new JPanel(new BorderLayout());
+		TitledBorder taskBorder = BorderFactory.createTitledBorder("TASKS"); // BORDER NAME
+		taskBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
+		taskContainer.setBorder(taskBorder);
+		
+		/*_____________________ TASK TABLE _____________________*/
+		JTable initialTaskTable = new JTable(TasksTableManager.model);
+		initialTaskTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 12));
+		initialTaskTable.setRowHeight(25);
+		JScrollPane scrollableTaskTable = new JScrollPane(initialTaskTable);
+		taskContainer.add(scrollableTaskTable);
 
-		// Add container to dashboard
-		dashboardPanel.add(tablesContainer);
-		dashboardPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		/*_____________________ ADD _____________________*/
+		tablesContainer.add(cropContainer);
+		tablesContainer.add(taskContainer);
 
-		// Refresh Button
+		/*_____________________ REFRESH CONTAINER _____________________*/
 		JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 5));
 		refreshPanel.setBackground(Color.white);
-
-		JButton refreshBtn = new JButton("Refresh Tables");
-
-		// Match exact styling from other panels
+		
+		/*_____________________ BUTTON _____________________*/
+		JButton refreshBtn = new JButton("REFRESH TABLES");
 		refreshBtn.setFont(new Font("Tahoma", Font.BOLD, 14));
 		refreshBtn.setFocusPainted(false);
 		refreshBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-
-
-		// Action listener
+		refreshPanel.add(refreshBtn);
 		refreshBtn.addActionListener(e -> {
 			CropTableManager.refreshCropTable();
 			TasksTableManager.refreshTaskTable();
 		});
 
-		refreshPanel.add(refreshBtn);
-
-		// Add components to dashboard with minimal spacing
-		dashboardPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Small gap between tables and button
+		/*_____________________ ADD _____________________*/
+		dashboardPanel.add(tablesContainer);
+		dashboardPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		dashboardPanel.add(refreshPanel);
-
+		
 		/*===================== INVENTORY =====================*/
 		/*_____________________ PANEL #1 _____________________*/
 		JPanel inventoryListTable = new JPanel(new BorderLayout());
@@ -1087,17 +1081,17 @@ public class Application {
 		exportPanel.add(exportBtn);
 		reportPanel.add(exportPanel, BorderLayout.SOUTH); 
 		/*===================== ADD TO CENTRAL PANEL =====================*/
-				mainPanel.add(dashboardPanel, "dashboard");
-				mainPanel.add(cropManagementPanel, "management");
-				mainPanel.add(InventoryPanel, "inventory");
-				mainPanel.add(tasksPanel, "tasks");
-				mainPanel.add(reportPanel, "reports");
+		mainPanel.add(dashboardPanel, "dashboard");
+		mainPanel.add(cropManagementPanel, "management");
+		mainPanel.add(InventoryPanel, "inventory");
+		mainPanel.add(tasksPanel, "tasks");
+		mainPanel.add(reportPanel, "reports");
 
-				/*===================== ACTION LISTENER FOR CARD LAYOUT =====================*/
-				dashboardBtn.addActionListener(e -> {  CropTableManager.refreshCropTable(); TasksTableManager.refreshTaskTable(); cardLayout.show(mainPanel, "dashboard"); });
-				manageBtn.addActionListener(e -> cardLayout.show(mainPanel, "management"));
-				monitorBtn.addActionListener(e -> cardLayout.show(mainPanel, "inventory"));
-				tasksBtn.addActionListener(e -> cardLayout.show(mainPanel, "tasks"));
-				reportsBtn.addActionListener(e -> cardLayout.show(mainPanel, "reports"));
+		/*===================== ACTION LISTENER FOR CARD LAYOUT =====================*/
+		dashboardBtn.addActionListener(e -> {  CropTableManager.refreshCropTable(); TasksTableManager.refreshTaskTable(); cardLayout.show(mainPanel, "dashboard"); });
+		manageBtn.addActionListener(e -> cardLayout.show(mainPanel, "management"));
+		monitorBtn.addActionListener(e -> cardLayout.show(mainPanel, "inventory"));
+		tasksBtn.addActionListener(e -> cardLayout.show(mainPanel, "tasks"));
+		reportsBtn.addActionListener(e -> cardLayout.show(mainPanel, "reports"));
 	}
 }

@@ -15,7 +15,7 @@ public class CropTableManager {
 	// CREATION OF A CLASS-LEVEL VARIABLES
 	public static DefaultTableModel model;
 	public static JTable cropTable;
-
+	
 	// ADDS THE TABLE
 	// THE PARAMETER IS THE JPANEL WHERE THE TABLE WILL RESIDE INSIDE WITH ITS LAYOUT BEING BORDERLAYOUT
 	//SO IT IS IN THE CENTER FILLS TILL THE END OF THE JPANEL'S DIMENSION
@@ -45,10 +45,10 @@ public class CropTableManager {
 		tableScrollPane.setPreferredSize(new Dimension(700, 400));
 
 		// ADDING FONT STYLES TO THE HEADER OF THE TABLE
-		cropTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
+		cropTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 16));
 
 		// ADDING HEIGHT PER ROW
-		cropTable.setRowHeight(25);
+		cropTable.setRowHeight(30);
 
 		// ADDS THE FINISHED RENDERED AND WITH COLUMN-READY DATA TO THE ACTUAL JPANEL WHERE THE TABLE WILL RESIDE, IN THIS CASE THE TABLE CONTAINERS
 		tableListofCrops.add(tableScrollPane, BorderLayout.CENTER);
