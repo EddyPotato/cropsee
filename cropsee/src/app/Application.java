@@ -542,10 +542,13 @@ public class Application {
 		// Controls
 		JPanel controls = new JPanel(new BorderLayout());
 		controls.setBackground(Color.white);
-		controls.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 50));
 		controls.setPreferredSize(new Dimension(200, 100));
 		
-		JButton refresh = new JButton("Refresh Inventory");
+		JButton refresh = new JButton("Refresh Crop");
+		refresh.setFont(new Font("Roboto", Font.BOLD, 20));
+		refresh.setFocusPainted(false);
+		refresh.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		refresh.setPreferredSize(new Dimension(200, 100));
 		refresh.setBackground(Color.decode("#F9A825"));
 		refresh.setForeground(Color.decode("#FFFFFF"));
 		refresh.addActionListener(e -> refreshChart(chart, CropTableManager::getCropStatusData));
@@ -566,10 +569,14 @@ public class Application {
 
 		JPanel controls = new JPanel(new BorderLayout());
 		controls.setBackground(Color.white);
-		controls.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 50));
 		controls.setPreferredSize(new Dimension(200, 100));
 		
-		JButton refresh = new JButton("Refresh Inventory");
+		JButton refresh = new JButton("Refresh Report");
+		refresh.setFont(new Font("Roboto", Font.BOLD, 20));
+		refresh.setFocusPainted(false);
+		refresh.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		refresh.setMargin(new Insets(10, 10, 10, 10));
+		refresh.setPreferredSize(new Dimension(200, 100));
 		refresh.setBackground(Color.decode("#F9A825"));
 		refresh.setForeground(Color.decode("#FFFFFF"));
 		refresh.addActionListener(e -> refreshChart(chart, TasksTableManager::getTaskStatusData));
@@ -595,10 +602,14 @@ public class Application {
 
 		JPanel controls = new JPanel(new BorderLayout());
 		controls.setBackground(Color.white);
-		controls.setBorder(BorderFactory.createEmptyBorder(0, 0, 50, 50));
 		controls.setPreferredSize(new Dimension(200, 100));
 		
 		JButton refresh = new JButton("Refresh Inventory");
+		refresh.setFont(new Font("Roboto", Font.BOLD, 20));
+		refresh.setFocusPainted(false);
+		refresh.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		refresh.setMargin(new Insets(10, 10, 10, 10));
+		refresh.setPreferredSize(new Dimension(200, 100));
 		refresh.setBackground(Color.decode("#F9A825"));
 		refresh.setForeground(Color.decode("#FFFFFF"));
 		refresh.addActionListener(e -> refreshChart(chart, () -> {
