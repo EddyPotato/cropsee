@@ -922,10 +922,14 @@ public class Application {
 		/*===================== INVENTORY =====================*/
 		JPanel inventoryListTable = new JPanel(new BorderLayout());
 		inventoryListTable.setPreferredSize(new Dimension(0, 400));
+		inventoryListTable.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		
 		InventoryTableManager.addInventoryTable(inventoryListTable);
 
 		JPanel inventoryActionPanel = new JPanel();
-		inventoryActionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
+		inventoryActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+		inventoryActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+
 
 		JButton addItemBtn = new JButton("Add Item");
 		JButton editItemBtn = new JButton("Edit Item");
