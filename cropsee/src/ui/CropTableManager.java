@@ -5,7 +5,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import app.DBConnection;
 
 public class CropTableManager {
@@ -31,6 +34,7 @@ public class CropTableManager {
         
         cropTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         cropTable.setRowHeight(25);
+        
         tableListofCrops.add(tableScrollPane, BorderLayout.CENTER);
     }
 
@@ -116,5 +120,22 @@ public class CropTableManager {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error deleting crop: " + e.getMessage());
         }
+    }
+ // In ui/CropTableManager.java
+    public static Map<String, Integer> getCropStatusData() {
+        Map<String, Integer> data = new LinkedHashMap<>();
+        String query = "SELECT status, COUNT(*) AS count FROM crops GROUP BY status";
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            
+            while (rs.next()) {
+                data.put(rs.getString("status"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error loading status data: " + e.getMessage());
+        }
+        return data;
     }
 }

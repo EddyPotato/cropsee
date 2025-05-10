@@ -1,27 +1,69 @@
 package ui;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;  // Using java.util.Date for display
+import app.DBConnection;
 
 public class ReportsTableManager {
-    public static void addReportsTable(JPanel reportsPanel) {
-        // Column names for the reports table
-        String[] columnNames = { "Report ID", "Report Type", "Generated On", "Details" };
+    private static DefaultTableModel model;
+    private static JTable reportsTable;
 
-        // Sample data for the reports table (replace with database data later)
-        Object[][] data = {
-            { "1", "Weekly Crop Report", "2023-05-05", "Details about crop growth" },
-            { "2", "Monthly Harvest Report", "2023-04-30", "Details about harvested crops" },
-            { "3", "Inventory Report", "2023-05-01", "Details about inventory levels" },
+    public static void addReportsTable(JPanel reportsPanel) {
+        String[] columnNames = {"Report Type", "Generated On", "Details"};
+        model = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
 
-        // Creating a table model with the data
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
-        JTable reportsTable = new JTable(model);
+        reportsTable = new JTable(model);
+        refreshReports(); // Load initial data
 
-        // Setting the table in a JScrollPane for scrolling
-        JScrollPane tableScrollPane = new JScrollPane(reportsTable);
-        reportsPanel.add(tableScrollPane);
+        JScrollPane scrollPane = new JScrollPane(reportsTable);
+        reportsPanel.add(scrollPane);
+    }
+
+    public static void refreshReports() {
+        model.setRowCount(0);  // Clear existing data
+        
+        // Harvest Report
+        addReportRow(
+            "Harvest Summary", 
+            new Date(System.currentTimeMillis()),  // java.util.Date
+            "Total harvested crops: " + getHarvestedCropCount()
+        );
+        
+        // Add more report types here
+    }
+
+    private static void addReportRow(String type, Date generatedOn, String details) {
+        model.addRow(new Object[]{type, generatedOn, details});
+    }
+
+    private static int getHarvestedCropCount() {
+        String query = "SELECT COUNT(*) AS count FROM crops WHERE status='Harvested'";
+        int count = 0;
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error fetching harvest count: " + e.getMessage());
+        }
+        return count;
     }
 }

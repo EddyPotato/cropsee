@@ -5,7 +5,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import app.DBConnection;
 
 public class TasksTableManager {
@@ -31,7 +34,6 @@ public class TasksTableManager {
         
         tasksTable.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 14));
         tasksTable.setRowHeight(25);
-        tasksTable.setFillsViewportHeight(true);
         
         tableContainer.add(tableScrollPane, BorderLayout.CENTER);
     }
@@ -159,5 +161,21 @@ public class TasksTableManager {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error removing tasks: " + e.getMessage());
         }
+    }
+    public static Map<String, Integer> getTaskStatusData() {
+        Map<String, Integer> data = new LinkedHashMap<>();
+        String query = "SELECT status, COUNT(*) AS count FROM tasks GROUP BY status";
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            
+            while (rs.next()) {
+                data.put(rs.getString("status"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error loading task data: " + e.getMessage());
+        }
+        return data;
     }
 }
