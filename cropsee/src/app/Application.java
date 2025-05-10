@@ -287,6 +287,7 @@ public class Application {
 		JDialog dialog = new JDialog(mainFrame, "Edit Task", true);
 		dialog.setLayout(new GridLayout(7, 2, 5, 5));
 
+		// MAKES THE TEXTFIELDS AND THE JCOMBOBOX
 		JTextField taskNameField = new JTextField(taskName);
 		JTextField assignedToField = new JTextField(assignedTo);
 		JTextField dueDateField = new JTextField(dueDate.toString());
