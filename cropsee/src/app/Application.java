@@ -31,7 +31,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JComboBox;
 
 import java.sql.Connection;
@@ -54,6 +56,8 @@ import java.io.File;
 
 import ui.*; // import all CONTENT OF TABS
 
+import com.toedter.calendar.JDateChooser;
+
 @SuppressWarnings("unused")
 public class Application {
 	/*_____________________ CLASS-LEVEL _____________________*/
@@ -67,7 +71,7 @@ public class Application {
 	private Component createBorderGap() {
 		return Box.createRigidArea(new Dimension(0, 5));
 	}
-	
+
 	private Component createActionButtonGap() {
 		return Box.createRigidArea(new Dimension(10, 0));
 	}
@@ -77,19 +81,21 @@ public class Application {
 	/*--------------------- ADD CROP ---------------------*/
 	private void showAddCropDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
+		dialog.setPreferredSize(new Dimension(300, 200));
+
 		JPanel contentPanel = new JPanel(new GridLayout(5, 2, 5, 5));
 		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
 		JTextField nameField = new JTextField();
-		JTextField plantingDateField = new JTextField();
-		JTextField harvestDateField = new JTextField();
+		JDateChooser plantingDateField = new JDateChooser();
+		JDateChooser harvestDateField = new JDateChooser();
 		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Planning", "Growing", "Harvested"});
 
 		contentPanel.add(new JLabel("Crop Name:"));
 		contentPanel.add(nameField);
-		contentPanel.add(new JLabel("Planting Date (YYYY-MM-DD):"));
+		contentPanel.add(new JLabel("Planting Date:"));
 		contentPanel.add(plantingDateField);
-		contentPanel.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
+		contentPanel.add(new JLabel("Harvest Date:"));
 		contentPanel.add(harvestDateField);
 		contentPanel.add(new JLabel("Status:"));
 		contentPanel.add(statusCombo);
@@ -100,28 +106,28 @@ public class Application {
 		// THIS WILL EXECUTE AFTER CLICKING THE BUTTON
 		submitButton.addActionListener(e -> {
 			try {
-				Date plantingDate = Date.valueOf(plantingDateField.getText()); // CONVERTS THE DATE
-				Date harvestDate = Date.valueOf(harvestDateField.getText()); // CONVERTS THE DATE AS WELL
+				Date plantingDate = new java.sql.Date(plantingDateField.getDate().getTime());
+				Date harvestDate = new java.sql.Date(harvestDateField.getDate().getTime());
+
 				CropTableManager.addCrop(
 						nameField.getText(),
 						plantingDate,
 						harvestDate,
 						(String) statusCombo.getSelectedItem()
-						); // WILL ADD THE USER INPUT TO THE TABLE THAT WILL AUTOMATICALLY REFRESHING IN A SERIES OF LOGICAL PATHWAYS
+						);
 				dialog.dispose(); // EXITS THE DIALOG
-			} catch (IllegalArgumentException ex) {
-				JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD"); // SHOWS IN THE DIALOG OF THE ERROR, CAN PUT ANY OTHER MESSAGE
+			} catch (NullPointerException ex) {
+				JOptionPane.showMessageDialog(dialog, "Please select valid dates!");
 			}
 		});
 
 		contentPanel.add(new JPanel()); // ADDS AN EMPTY TO ALIGN THE SUBMIT TO THE TEXTFIELDS (SEE THE PROCESS OF GRIDLAYOUT USING 5 ROWS 2 COLUMNS)
-		contentPanel.add(submitButton); // TO CACULATE: THERE ARE 5 OBJECTS, COUNT THE NUMBER OF OBJECTS; THE 2ND COLUMN IS FOR THE TEXT LABELS
+		contentPanel.add(submitButton);
 
-		// ADDS THE CONTENT PANEL WITH PADDING USING CREATEEMPTYBORDER TO THE ACTUAL DIALOG POPPING UP AFTER CLICKING ITS ATTACHED-TO BUTTON
 		dialog.setContentPane(contentPanel);
-		dialog.pack(); // PACKS THE CONTENT TOGETHER
-		dialog.setLocationRelativeTo(mainFrame); // CENTER TO THE MAIN FRAME OF THE PROGRAM
-		dialog.setVisible(true); // TO BE SEEN, USUALLY NOT SEEN MAYBE A DEVELOPER TOOL OPTION PERHAPS BUT WHY DO THAT THOUGH...
+		dialog.pack();
+		dialog.setLocationRelativeTo(mainFrame);
+		dialog.setVisible(true);
 	}
 
 	/*--------------------- EDIT CROP ---------------------*/
@@ -146,6 +152,7 @@ public class Application {
 
 		// CREATES THE DIALOG AFTER CLICKING
 		JDialog dialog = new JDialog(mainFrame, "Edit Crop", true);
+		dialog.setPreferredSize(new Dimension(300, 200));
 
 		// WE WILL ADD THE CONTENT PANEL AGAIN FOR THE DIALOG
 		JPanel contentPanel = new JPanel(new GridLayout(5, 2, 5, 5));
@@ -153,8 +160,11 @@ public class Application {
 
 		// THESE ARE TEXT FIELD THAT HAD THE PRE-DEFINED ANSWERS THAT IS TO BE EDITED
 		JTextField nameField = new JTextField(name);
-		JTextField plantingDateField = new JTextField(plantingDate.toString());
-		JTextField harvestDateField = new JTextField(harvestDate.toString());
+		JDateChooser plantingDateField = new JDateChooser();
+		plantingDateField.setDate(plantingDate);
+
+		JDateChooser harvestDateField = new JDateChooser();
+		harvestDateField.setDate(harvestDate);
 
 		// FOR THOSE WITH CHOICE OPTIONS
 		// PROVIDE THE OPTIONS MADE
@@ -166,9 +176,9 @@ public class Application {
 		// Add components to dialog
 		contentPanel.add(new JLabel("Crop Name:"));
 		contentPanel.add(nameField);
-		contentPanel.add(new JLabel("Planting Date (YYYY-MM-DD):"));
+		contentPanel.add(new JLabel("Planting Date:"));
 		contentPanel.add(plantingDateField);
-		contentPanel.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
+		contentPanel.add(new JLabel("Harvest Date:"));
 		contentPanel.add(harvestDateField);
 		contentPanel.add(new JLabel("Status:"));
 		contentPanel.add(statusCombo);
@@ -179,8 +189,8 @@ public class Application {
 		submitButton.addActionListener(e -> {
 			try {
 				// CONVERT THE DATES TO USABLE DATA FOR THE MYSQL QUERY FOR EDITING
-				Date newPlantingDate = Date.valueOf(plantingDateField.getText());
-				Date newHarvestDate = Date.valueOf(harvestDateField.getText());
+				Date newPlantingDate = new java.sql.Date(plantingDateField.getDate().getTime());
+				Date newHarvestDate = new java.sql.Date(harvestDateField.getDate().getTime());
 
 				// INPUT INSIDE THE UPDATE CROP FUNCTION THAT DIRECTLY TACKLES WITH THE DATA IN THE MYSQL TABLE
 				CropTableManager.updateCrop(
@@ -236,7 +246,7 @@ public class Application {
 
 		JTextField taskNameField = new JTextField();
 		JTextField assignedToField = new JTextField();
-		JTextField dueDateField = new JTextField();
+		JDateChooser dueDateField = new JDateChooser();
 		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
 		cropIdCombo.insertItemAt(null, 0);
 		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
@@ -246,7 +256,7 @@ public class Application {
 		contentPanel.add(taskNameField);
 		contentPanel.add(new JLabel("Assigned To:"));
 		contentPanel.add(assignedToField);
-		contentPanel.add(new JLabel("Due Date (YYYY-MM-DD):"));
+		contentPanel.add(new JLabel("Due Date:"));
 		contentPanel.add(dueDateField);
 		contentPanel.add(new JLabel("Crop ID (Optional):"));
 		contentPanel.add(cropIdCombo);
@@ -260,7 +270,7 @@ public class Application {
 
 		submitButton.addActionListener(e -> {
 			try {
-				Date dueDate = Date.valueOf(dueDateField.getText());
+				Date dueDate = new java.sql.Date(dueDateField.getDate().getTime());
 				Integer cropId = (Integer) cropIdCombo.getSelectedItem();
 				TasksTableManager.addTask(
 						taskNameField.getText(),
@@ -308,7 +318,7 @@ public class Application {
 		// MAKES THE TEXTFIELDS AND THE JCOMBOBOX
 		JTextField taskNameField = new JTextField(taskName);
 		JTextField assignedToField = new JTextField(assignedTo);
-		JTextField dueDateField = new JTextField(dueDate.toString());
+		JDateChooser dueDateField = new JDateChooser();
 		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
 		cropIdCombo.setSelectedItem(cropId);
 		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
@@ -334,7 +344,7 @@ public class Application {
 
 		submitButton.addActionListener(e -> {
 			try {
-				Date newDueDate = Date.valueOf(dueDateField.getText());
+				Date newDueDate = new java.sql.Date(dueDateField.getDate().getTime());
 				TasksTableManager.updateTask(
 						taskId,
 						taskNameField.getText(),
@@ -543,7 +553,7 @@ public class Application {
 		JPanel controls = new JPanel(new BorderLayout());
 		controls.setBackground(Color.white);
 		controls.setPreferredSize(new Dimension(200, 100));
-		
+
 		JButton refresh = new JButton("Refresh Crop");
 		refresh.setFont(new Font("Roboto", Font.BOLD, 20));
 		refresh.setFocusPainted(false);
@@ -570,7 +580,7 @@ public class Application {
 		JPanel controls = new JPanel(new BorderLayout());
 		controls.setBackground(Color.white);
 		controls.setPreferredSize(new Dimension(200, 100));
-		
+
 		JButton refresh = new JButton("Refresh Report");
 		refresh.setFont(new Font("Roboto", Font.BOLD, 20));
 		refresh.setFocusPainted(false);
@@ -603,7 +613,7 @@ public class Application {
 		JPanel controls = new JPanel(new BorderLayout());
 		controls.setBackground(Color.white);
 		controls.setPreferredSize(new Dimension(200, 100));
-		
+
 		JButton refresh = new JButton("Refresh Inventory");
 		refresh.setFont(new Font("Roboto", Font.BOLD, 20));
 		refresh.setFocusPainted(false);
@@ -734,9 +744,9 @@ public class Application {
 		mainFrame.setSize(1200, 700);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setLocationRelativeTo(null);
-		
+
 		// DANGEROUS JK
-//		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
 		/*_____________________ STAGE _____________________*/
 		mainFrame.getContentPane().setLayout(new BorderLayout());
@@ -902,15 +912,15 @@ public class Application {
 		JButton addCropBtn = new JButton("Add New Crop");
 		addCropBtn.setBackground(Color.decode("#27AE60"));
 		addCropBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton editCropBtn = new JButton("Edit Crop");
 		editCropBtn.setBackground(Color.decode("#F9A825"));
 		editCropBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton deleteCropBtn = new JButton("Delete Crop");
 		deleteCropBtn.setBackground(Color.decode("#E74C3C"));
 		deleteCropBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		addCropBtn.addActionListener(e -> showAddCropDialog());
 		editCropBtn.addActionListener(e -> showEditCropDialog());
 		deleteCropBtn.addActionListener(e -> deleteSelectedCrop());
@@ -924,14 +934,14 @@ public class Application {
 		}
 
 		JPanel cropButtonContainer = new JPanel();
-		
+
 		cropButtonContainer.add(addCropBtn);
 		cropButtonContainer.add(createActionButtonGap());
 		cropButtonContainer.add(editCropBtn);
 		cropButtonContainer.add(createActionButtonGap());
 		cropButtonContainer.add(deleteCropBtn);
 		cropManagementActionPanel.add(cropButtonContainer);
-		
+
 		cropManagementPanel.add(tableListofCrops);
 		cropManagementPanel.add(createBorderGap());
 		cropManagementPanel.add(cropManagementActionPanel);
@@ -952,19 +962,19 @@ public class Application {
 		JButton addTaskBtn = new JButton("Add New Task");
 		addTaskBtn.setBackground(Color.decode("#27AE60"));
 		addTaskBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton editTaskBtn = new JButton("Edit Task");
 		editTaskBtn.setBackground(Color.decode("#F9A825"));
 		editTaskBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton deleteTaskBtn = new JButton("Delete Task");
 		deleteTaskBtn.setBackground(Color.decode("#E74C3C"));
 		deleteTaskBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton completeTaskBtn = new JButton("Mark Complete");
 		completeTaskBtn.setBackground(Color.decode("#5DADE2"));
 		completeTaskBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton removeCompletedBtn = new JButton("Remove Completed");
 		removeCompletedBtn.setBackground(Color.decode("#AF7AC5"));
 		removeCompletedBtn.setForeground(Color.decode("#FFFFFF"));
@@ -994,7 +1004,7 @@ public class Application {
 
 		// Add buttons with spacing
 		JPanel taskButtonsContainer = new JPanel();
-		
+
 		taskButtonsContainer.add(addTaskBtn);
 		taskButtonsContainer.add(createActionButtonGap());
 		taskButtonsContainer.add(editTaskBtn);
@@ -1010,7 +1020,7 @@ public class Application {
 		tasksPanel.add(createBorderGap());
 		tasksPanel.add(tasksActionPanel);
 
-		
+
 		// THE REASON BAKIT NASA BABA TO KAYSA UNA IS NEED NIYANG BASA YUNG MGA TABLES AND DOING THAT NEEDS THE TWO NEEDED TABLES MAUNA SA KANYA
 		/*===================== DASHBOARD =====================*/
 		/*_____________________ MAIN CONTAINER _____________________*/
@@ -1031,35 +1041,49 @@ public class Application {
 		TitledBorder taskBorder = BorderFactory.createTitledBorder("TASKS"); // BORDER NAME
 		taskBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
 		taskContainer.setBorder(taskBorder);
-		
+
 		/*_____________________ CROP TABLE _____________________*/
 		JTable initialCropTable = new JTable(CropTableManager.model);
 		initialCropTable.getTableHeader().setReorderingAllowed(false);
 		initialCropTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 14));
 		initialCropTable.setRowHeight(30);
+		
+		// Center all columns
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		for (int i = 0; i < initialCropTable.getColumnCount(); i++) {
+			initialCropTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		
 		JScrollPane scrollableCropTable = new JScrollPane(initialCropTable);
 		cropContainer.add(scrollableCropTable);
-		
+
 		/*_____________________ TASK TABLE _____________________*/
 		JTable initialTaskTable = new JTable(TasksTableManager.model);
 		initialTaskTable.getTableHeader().setReorderingAllowed(false);
 		initialTaskTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 14));
 		initialTaskTable.setRowHeight(30);
+		
+		// Center all columns
+		for (int i = 0; i < initialTaskTable.getColumnCount(); i++) {
+			initialTaskTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		
 		JScrollPane scrollableTaskTable = new JScrollPane(initialTaskTable);
 		taskContainer.add(scrollableTaskTable);
 
 		/*_____________________ ADD _____________________*/
 		tablesContainer.add(cropContainer);
 		tablesContainer.add(taskContainer);
-		
-		
+
+
 
 		/*_____________________ REFRESH CONTAINER _____________________*/
 		JPanel refreshPanel = new JPanel(new GridBagLayout());
 		refreshPanel.setPreferredSize(new Dimension(10000, 100));
 		refreshPanel.setMaximumSize(new Dimension(10000, 100));
 		refreshPanel.setBackground(Color.decode("#E8F5E9"));
-		
+
 		/*_____________________ BUTTON _____________________*/
 		JButton refreshBtn = new JButton("REFRESH TABLES");
 		refreshBtn.setFont(new Font("Roboto", Font.BOLD, 20));
@@ -1068,14 +1092,14 @@ public class Application {
 		refreshBtn.setFocusPainted(false);
 		refreshBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		refreshBtn.setMargin(new Insets(10, 10, 10, 10));
-		
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.anchor = GridBagConstraints.CENTER;
-		
+
 		refreshPanel.add(refreshBtn, gbc);
 		refreshBtn.addActionListener(e -> {
 			CropTableManager.refreshCropTable();
@@ -1086,7 +1110,7 @@ public class Application {
 		dashboardPanel.add(tablesContainer);
 		dashboardPanel.add(createBorderGap());
 		dashboardPanel.add(refreshPanel);
-		
+
 		/*===================== INVENTORY =====================*/
 		/*_____________________ PANEL #1 _____________________*/
 		JPanel inventoryListTable = new JPanel(new BorderLayout());
@@ -1105,11 +1129,11 @@ public class Application {
 		JButton addItemBtn = new JButton("Add Item");
 		addItemBtn.setBackground(Color.decode("#27AE60"));
 		addItemBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton editItemBtn = new JButton("Edit Item");
 		editItemBtn.setBackground(Color.decode("#F9A825"));
 		editItemBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton deleteItemBtn = new JButton("Delete Item");
 		deleteItemBtn.setBackground(Color.decode("#E74C3C"));
 		deleteItemBtn.setForeground(Color.decode("#FFFFFF"));
@@ -1129,7 +1153,7 @@ public class Application {
 
 		/*_____________________ ADD BUTTONS TO PANEL #2 _____________________*/
 		JPanel buttoncontainer = new JPanel();
-		
+
 		buttoncontainer.add(addItemBtn);
 		buttoncontainer.add(createActionButtonGap());
 		buttoncontainer.add(editItemBtn);
@@ -1143,7 +1167,7 @@ public class Application {
 		InventoryPanel.add(inventoryActionPanel);
 
 		/*===================== REPORT =====================*/
-		
+
 		reportTabs = new JTabbedPane();
 		reportTabs.setPreferredSize(new Dimension(0, 400));
 		reportTabs.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -1161,15 +1185,15 @@ public class Application {
 		reportTabs.addTab("INVENTORY", inventoryReportTab);
 
 		// Add tabs to the report panel
-		
+
 
 		/*_____________________ EXPORT _____________________*/
 		JPanel exportPanel = new JPanel(new GridBagLayout());
 		exportPanel.setPreferredSize(new Dimension(0, 100));
 		exportPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-		
+
 		JPanel exportButtonContainer = new JPanel();
-		
+
 		JButton exportBtn = new JButton("Export Current Report");
 		exportBtn.setFont(new Font("Roboto", Font.BOLD, 20));
 		exportBtn.setFocusPainted(false);
@@ -1177,7 +1201,7 @@ public class Application {
 		exportBtn.setMargin(new Insets(10, 10, 10, 10));
 		exportBtn.setBackground(Color.decode("#27AE60"));
 		exportBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		exportBtn.addActionListener(e -> {
 			int selectedTab = reportTabs.getSelectedIndex();
 			switch(selectedTab) {
@@ -1192,15 +1216,15 @@ public class Application {
 				break;
 			}
 		});
-		
+
 		exportButtonContainer.add(exportBtn);
 		exportPanel.add(exportButtonContainer);
-		
+
 		/*_____________________ ADD _____________________*/
 		reportPanel.add(reportTabs);
 		reportPanel.add(createBorderGap());
 		reportPanel.add(exportPanel);
-		
+
 		/*===================== ADD TO CENTRAL PANEL =====================*/
 		mainPanel.add(dashboardPanel, "dashboard");
 		mainPanel.add(cropManagementPanel, "crop management");
