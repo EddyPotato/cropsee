@@ -340,8 +340,8 @@ public class Application {
 
 		// Input fields
 		JTextField nameField = new JTextField();
-		JTextField quantityField = new JTextField();  // Renamed for clarity
-		JTextField priceField = new JTextField();     // Renamed for clarity
+		JTextField quantityField = new JTextField();
+		JTextField priceField = new JTextField();
 
 		// Add components
 		contentPanel.add(new JLabel("ITEM NAME:"));
@@ -362,10 +362,10 @@ public class Application {
 				int quantity = Integer.parseInt(quantityField.getText());
 				double price = Double.parseDouble(priceField.getText());
 				InventoryTableManager.addItem(
-					nameField.getText(),
-					quantity,
-					price
-				);
+						nameField.getText(),
+						quantity,
+						price
+						);
 				dialog.dispose(); // exit dialog
 			} catch (NumberFormatException ex) {
 				JOptionPane.showMessageDialog(dialog, "Invalid number format!");
@@ -391,20 +391,25 @@ public class Application {
 		double price = (double) InventoryTableManager.model.getValueAt(selectedRow, 3);
 
 		JDialog dialog = new JDialog(mainFrame, "Edit Inventory Item", true);
-		dialog.setLayout(new GridLayout(4, 2, 5, 5));
+		JPanel contentPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
 		JTextField nameField = new JTextField(name);
 		JTextField quantityField = new JTextField(String.valueOf(quantity));
 		JTextField priceField = new JTextField(String.valueOf(price));
 
-		dialog.add(new JLabel("Item Name:"));
-		dialog.add(nameField);
-		dialog.add(new JLabel("Quantity:"));
-		dialog.add(quantityField);
-		dialog.add(new JLabel("Price:"));
-		dialog.add(priceField);
+		contentPanel.add(new JLabel("Item Name:"));
+		contentPanel.add(nameField);
+		contentPanel.add(new JLabel("Quantity:"));
+		contentPanel.add(quantityField);
+		contentPanel.add(new JLabel("Price:"));
+		contentPanel.add(priceField);
 
 		JButton submitButton = new JButton("Update Item");
+		submitButton.setFocusPainted(false);
+		contentPanel.add(new JLabel()); // empty space for alignment
+		contentPanel.add(submitButton);
+		
 		submitButton.addActionListener(e -> {
 			try {
 				int newQuantity = Integer.parseInt(quantityField.getText());
@@ -421,7 +426,7 @@ public class Application {
 			}
 		});
 
-		dialog.add(submitButton);
+		dialog.setContentPane(contentPanel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(mainFrame);
 		dialog.setVisible(true);
