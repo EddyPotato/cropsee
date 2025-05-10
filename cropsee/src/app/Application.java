@@ -56,6 +56,7 @@ public class Application {
 		return Box.createRigidArea(new Dimension(0, 5));
 	}
 	
+	/*===================== CRUD METHODS =====================*/
 	/*_____________________ CRUD - CROP MANAGEMENT _____________________*/
 	private void showAddCropDialog() {
 	    JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
