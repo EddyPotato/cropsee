@@ -45,6 +45,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import javax.swing.JFileChooser;
+import java.io.File;
 
 import ui.*; // import all CONTENT OF TABS
 
@@ -503,15 +507,58 @@ public class Application {
 	}
 	
 	private void exportCropData() {
-	    JOptionPane.showMessageDialog(mainFrame, "Exporting crop data...");
+	    String query = "SELECT * FROM crops";
+	    exportToCSV("Crops", query, new String[]{"Crop ID", "Crop Name", "Planting Date", "Harvest Date", "Status"});
 	}
 
 	private void exportTaskData() {
-	    JOptionPane.showMessageDialog(mainFrame, "Exporting task data...");
+	    String query = "SELECT * FROM tasks";
+	    exportToCSV("Tasks", query, new String[]{"Task ID", "Task Name", "Assigned To", "Due Date", "Crop ID", "Priority", "Status"});
 	}
 
 	private void exportInventoryData() {
-	    JOptionPane.showMessageDialog(mainFrame, "Exporting inventory data...");
+	    String query = "SELECT * FROM inventory";
+	    exportToCSV("Inventory", query, new String[]{"Item ID", "Item Name", "Quantity", "Price"});
+	}
+
+	// Generic CSV export method
+	private void exportToCSV(String reportType, String query, String[] headers) {
+	    JFileChooser fileChooser = new JFileChooser();
+	    fileChooser.setDialogTitle("Save " + reportType + " Report");
+	    fileChooser.setSelectedFile(new File(reportType + "_Report.csv"));
+	    
+	    int userSelection = fileChooser.showSaveDialog(mainFrame);
+	    
+	    if (userSelection == JFileChooser.APPROVE_OPTION) {
+	        File fileToSave = fileChooser.getSelectedFile();
+	        
+	        try (Connection conn = DBConnection.getConnection();
+	             Statement stmt = conn.createStatement();
+	             ResultSet rs = stmt.executeQuery(query);
+	             BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+	            
+	            // Write CSV headers
+	            writer.write(String.join(",", headers));
+	            writer.newLine();
+	            
+	            // Write data rows
+	            while (rs.next()) {
+	                List<String> row = new ArrayList<>();
+	                for (int i = 1; i <= headers.length; i++) {
+	                    row.add(rs.getString(i));
+	                }
+	                writer.write(String.join(",", row));
+	                writer.newLine();
+	            }
+	            
+	            JOptionPane.showMessageDialog(mainFrame, 
+	                reportType + " data exported successfully to:\n" + fileToSave.getAbsolutePath());
+	            
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(mainFrame, 
+	                "Export failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
 	}
 	
 	// Generic refresh helper
