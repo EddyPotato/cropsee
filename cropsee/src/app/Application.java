@@ -786,49 +786,58 @@ public class Application {
 		dashboardPanel.add(refreshPanel);
 		
 		/*===================== INVENTORY =====================*/
+		/*_____________________ PANEL #1 _____________________*/
 		JPanel inventoryListTable = new JPanel(new BorderLayout());
 		inventoryListTable.setPreferredSize(new Dimension(0, 400));
 		InventoryTableManager.addInventoryTable(inventoryListTable);
 
+		/*_____________________ PANEL #2 _____________________*/
 		JPanel inventoryActionPanel = new JPanel();
 		inventoryActionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
+		/*_____________________ BUTTONS FOR PANEL #2 _____________________*/
 		JButton addItemBtn = new JButton("Add Item");
 		JButton editItemBtn = new JButton("Edit Item");
 		JButton deleteItemBtn = new JButton("Delete Item");
 
-		// Style buttons
+		/*_____________________ STYLE FOR BUTTONS _____________________*/
 		for (JButton btn : new JButton[]{addItemBtn, editItemBtn, deleteItemBtn}) {
 		    btn.setFont(new Font("Tahoma", Font.BOLD, 14));
 		    btn.setFocusPainted(false);
 		    btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		}
 
-		// Add listeners
+		/*_____________________ LISTENER FOR BUTTONS _____________________*/
 		addItemBtn.addActionListener(e -> showAddInventoryDialog());
 		editItemBtn.addActionListener(e -> showEditInventoryDialog());
 		deleteItemBtn.addActionListener(e -> deleteInventoryItem());
 
+		/*_____________________ ADD BUTTONS TO PANEL #2 _____________________*/
 		inventoryActionPanel.add(addItemBtn);
 		inventoryActionPanel.add(editItemBtn);
 		inventoryActionPanel.add(deleteItemBtn);
 
+		/*_____________________ ADD PANEL #1 AND #2 TO MAIN INVENTORY PANEL _____________________*/
 		InventoryPanel.add(inventoryListTable);
 		InventoryPanel.add(createBorderGap());
 		InventoryPanel.add(inventoryActionPanel);
+		
 		/*===================== REPORT =====================*/
+		/*_____________________ PANEL #1 _____________________*/
 		JPanel growthTrendPanel = new JPanel();
 		growthTrendPanel.setPreferredSize(new Dimension(0, 300));
 		growthTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
+		/*_____________________ PANEL #2 _____________________*/
 		JPanel pestTrendPanel = new JPanel();
 		pestTrendPanel.setPreferredSize(new Dimension(0, 300));
 		pestTrendPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
+		/*_____________________ ADD TABLE TO PANEL #1 _____________________*/
 		// Adding the reports table to the Reports Management panel using ReportsTableManager
 		ReportsTableManager.addReportsTable(reportPanel);
 		
-		/*_____________________ EXPORT _____________________*/
+		/*_____________________ PANEL #3 _____________________*/
 		JPanel exportActionPanel = new JPanel();
 		exportActionPanel.setPreferredSize(new Dimension(0, 100));
 		exportActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
