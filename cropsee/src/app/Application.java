@@ -70,82 +70,111 @@ public class Application {
 	/*_____________________ CRUD - CROP MANAGEMENT _____________________*/
 	private void showAddCropDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
-		dialog.setLayout(new GridLayout(5, 2, 5, 5));
-
+		JPanel contentPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+		
 		JTextField nameField = new JTextField();
 		JTextField plantingDateField = new JTextField();
 		JTextField harvestDateField = new JTextField();
 		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Planning", "Growing", "Harvested"});
 
-		dialog.add(new JLabel("Crop Name:"));
-		dialog.add(nameField);
-		dialog.add(new JLabel("Planting Date (YYYY-MM-DD):"));
-		dialog.add(plantingDateField);
-		dialog.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
-		dialog.add(harvestDateField);
-		dialog.add(new JLabel("Status:"));
-		dialog.add(statusCombo);
+		contentPanel.add(new JLabel("Crop Name:"));
+		contentPanel.add(nameField);
+		contentPanel.add(new JLabel("Planting Date (YYYY-MM-DD):"));
+		contentPanel.add(plantingDateField);
+		contentPanel.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
+		contentPanel.add(harvestDateField);
+		contentPanel.add(new JLabel("Status:"));
+		contentPanel.add(statusCombo);
 
 		JButton submitButton = new JButton("Add Crop");
+		submitButton.setFocusPainted(false);
+		
+		// THIS WILL EXECUTE AFTER CLICKING THE BUTTON
 		submitButton.addActionListener(e -> {
 			try {
-				Date plantingDate = Date.valueOf(plantingDateField.getText());
-				Date harvestDate = Date.valueOf(harvestDateField.getText());
+				Date plantingDate = Date.valueOf(plantingDateField.getText()); // CONVERTS THE DATE
+				Date harvestDate = Date.valueOf(harvestDateField.getText()); // CONVERTS THE DATE AS WELL
 				CropTableManager.addCrop(
 						nameField.getText(),
 						plantingDate,
 						harvestDate,
 						(String) statusCombo.getSelectedItem()
-						);
-				dialog.dispose();
+						); // WILL ADD THE USER INPUT TO THE TABLE THAT WILL AUTOMATICALLY REFRESHING IN A SERIES OF LOGICAL PATHWAYS
+				dialog.dispose(); // EXITS THE DIALOG
 			} catch (IllegalArgumentException ex) {
-				JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD");
+				JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD"); // SHOWS IN THE DIALOG OF THE ERROR, CAN PUT ANY OTHER MESSAGE
 			}
 		});
 
-		dialog.add(submitButton);
-		dialog.pack();
-		dialog.setLocationRelativeTo(mainFrame);
-		dialog.setVisible(true);
+		contentPanel.add(new JPanel()); // ADDS AN EMPTY TO ALIGN THE SUBMIT TO THE TEXTFIELDS (SEE THE PROCESS OF GRIDLAYOUT USING 5 ROWS 2 COLUMNS)
+		contentPanel.add(submitButton); // TO CACULATE: THERE ARE 5 OBJECTS, COUNT THE NUMBER OF OBJECTS; THE 2ND COLUMN IS FOR THE TEXT LABELS
+		
+		// ADDS THE CONTENT PANEL WITH PADDING USING CREATEEMPTYBORDER TO THE ACTUAL DIALOG POPPING UP AFTER CLICKING ITS ATTACHED-TO BUTTON
+		dialog.setContentPane(contentPanel);
+		dialog.pack(); // PACKS THE CONTENT TOGETHER
+		dialog.setLocationRelativeTo(mainFrame); // CENTER TO THE MAIN FRAME OF THE PROGRAM
+		dialog.setVisible(true); // TO BE SEEN, USUALLY NOT SEEN MAYBE A DEVELOPER TOOL OPTION PERHAPS BUT WHY DO THAT THOUGH...
 	}
 
+	// SAME PROCESS BUT...
 	private void showEditCropDialog() {
+		// SEES IF THERE IS SELECTED ROW, CAN'T EDIT ON NOTHING RIGHT?
+		// IT GETS THE ABILITY TO SEE THE WHAT IS SELECTED NOT ON HERE BUT ON THE CROP TABLE MANAGER CLASS
+		// THE TABLES WILL BE CREATED ON THE UI PACKAGE NOT HERE IN THE MAIN
 		int selectedRow = CropTableManager.cropTable.getSelectedRow();
 		if (selectedRow == -1) {
 			JOptionPane.showMessageDialog(mainFrame, "Please select a crop to edit!");
 			return;
 		}
 
+		// GETS THE VALUES OF THE TABLE THAT IS IN ANOTHER CLASS
+		// THE MODEL PROBABLY HOLDS THE VALUES WHICH YOU WILL GET TO CHANGE IT
 		int cropId = (int) CropTableManager.model.getValueAt(selectedRow, 0);
 		String name = (String) CropTableManager.model.getValueAt(selectedRow, 1);
 		Date plantingDate = (Date) CropTableManager.model.getValueAt(selectedRow, 2);
 		Date harvestDate = (Date) CropTableManager.model.getValueAt(selectedRow, 3);
 		String status = (String) CropTableManager.model.getValueAt(selectedRow, 4);
 
+		// CREATES THE DIALOG AFTER CLICKING
 		JDialog dialog = new JDialog(mainFrame, "Edit Crop", true);
-		dialog.setLayout(new GridLayout(5, 2, 5, 5));
+		
+		// WE WILL ADD THE CONTENT PANEL AGAIN FOR THE DIALOG
+		JPanel contentPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
+		// THESE ARE TEXT FIELD THAT HAD THE PRE-DEFINED ANSWERS THAT IS TO BE EDITED
 		JTextField nameField = new JTextField(name);
 		JTextField plantingDateField = new JTextField(plantingDate.toString());
 		JTextField harvestDateField = new JTextField(harvestDate.toString());
+		
+		// FOR THOSE WITH CHOICE OPTIONS
+		// PROVIDE THE OPTIONS MADE
 		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Planning", "Growing", "Harvested"});
+		
+		// THEN STILL SET TO THE SELECTED OPTION
 		statusCombo.setSelectedItem(status);
 
 		// Add components to dialog
-		dialog.add(new JLabel("Crop Name:"));
-		dialog.add(nameField);
-		dialog.add(new JLabel("Planting Date (YYYY-MM-DD):"));
-		dialog.add(plantingDateField);
-		dialog.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
-		dialog.add(harvestDateField);
-		dialog.add(new JLabel("Status:"));
-		dialog.add(statusCombo);
+		contentPanel.add(new JLabel("Crop Name:"));
+		contentPanel.add(nameField);
+		contentPanel.add(new JLabel("Planting Date (YYYY-MM-DD):"));
+		contentPanel.add(plantingDateField);
+		contentPanel.add(new JLabel("Harvest Date (YYYY-MM-DD):"));
+		contentPanel.add(harvestDateField);
+		contentPanel.add(new JLabel("Status:"));
+		contentPanel.add(statusCombo);
 
 		JButton submitButton = new JButton("Update Crop");
+		submitButton.setFocusPainted(false);
+		
 		submitButton.addActionListener(e -> {
 			try {
+				// CONVERT THE DATES TO USABLE DATA FOR THE MYSQL QUERY FOR EDITING
 				Date newPlantingDate = Date.valueOf(plantingDateField.getText());
 				Date newHarvestDate = Date.valueOf(harvestDateField.getText());
+				
+				// INPUT INSIDE THE UPDATE CROP FUNCTION THAT DIRECTLY TACKLES WITH THE DATA IN THE MYSQL TABLE
 				CropTableManager.updateCrop(
 						cropId,
 						nameField.getText(),
@@ -153,31 +182,39 @@ public class Application {
 						newHarvestDate,
 						(String) statusCombo.getSelectedItem()
 						);
-				dialog.dispose();
+				dialog.dispose(); // EXITS THE DIALOG AFTERWARDS
 			} catch (IllegalArgumentException ex) {
-				JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD");
+				JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD"); // AN ERROR MESSAGE TO BE PRINTED, CAN BE ANY OTHER THING
 			}
 		});
 
-		dialog.add(submitButton);
+		contentPanel.add(new JPanel()); // ADDS EMPTY FOR ALIGNMENT
+		contentPanel.add(submitButton);
+		
+		dialog.setContentPane(contentPanel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(mainFrame);
 		dialog.setVisible(true);
 	}
 
+	// SAME PROCESS
 	private void deleteSelectedCrop() {
 		int selectedRow = CropTableManager.cropTable.getSelectedRow();
+		
+		// MUST SELECT SOMETHING
 		if (selectedRow == -1) {
 			JOptionPane.showMessageDialog(mainFrame, "Please select a crop to delete!");
 			return;
 		}
 
+		// THIS IS A CONFIRMATION STATUS AFTER CLICKING
 		int confirm = JOptionPane.showConfirmDialog(mainFrame, 
 				"Are you sure you want to delete this crop?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 
+		// LOGIC AFTER CLICKING YES OR NO
 		if (confirm == JOptionPane.YES_OPTION) {
-			int cropId = (int) CropTableManager.model.getValueAt(selectedRow, 0);
-			CropTableManager.deleteCrop(cropId);
+			int cropId = (int) CropTableManager.model.getValueAt(selectedRow, 0); // IT WILL GET THE ID FROM THE SELECTED CROP, USUALLY IN THE 1ST COLUMN (0)
+			CropTableManager.deleteCrop(cropId); // IT WILL DELETE IT BY CROP ID
 		}
 	}
 
