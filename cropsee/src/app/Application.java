@@ -242,60 +242,102 @@ public class Application {
 	/*_____________________ TASKS _____________________*/
 	/*--------------------- ADD TASK ---------------------*/
 	private void showAddTaskDialog() {
-		JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
-		dialog.setPreferredSize(new Dimension(500, 400));
-		JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5));
-		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+	    JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
+	    dialog.setPreferredSize(new Dimension(500, 400));
+	    JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5));
+	    contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-		JTextField taskNameField = new JTextField();
-		JTextField assignedToField = new JTextField();
-		JDateChooser dueDateField = new JDateChooser();
-		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
-		cropIdCombo.insertItemAt(null, 0);
-		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
-		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
+	    JTextField taskNameField = new JTextField();
+	    JTextField assignedToField = new JTextField();
+	    JDateChooser dueDateField = new JDateChooser();
+	    JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
+	    cropIdCombo.insertItemAt(null, 0);
+	    JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
+	    JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
 
-		contentPanel.add(new JLabel("Task Name:"));
-		contentPanel.add(taskNameField);
-		contentPanel.add(new JLabel("Assigned To:"));
-		contentPanel.add(assignedToField);
-		contentPanel.add(new JLabel("Due Date:"));
-		contentPanel.add(dueDateField);
-		contentPanel.add(new JLabel("Crop ID (Optional):"));
-		contentPanel.add(cropIdCombo);
-		contentPanel.add(new JLabel("Priority:"));
-		contentPanel.add(priorityCombo);
-		contentPanel.add(new JLabel("Status:"));
-		contentPanel.add(statusCombo);
+	    contentPanel.add(new JLabel("Task Name:"));
+	    contentPanel.add(taskNameField);
+	    contentPanel.add(new JLabel("Assigned To:"));
+	    contentPanel.add(assignedToField);
+	    contentPanel.add(new JLabel("Due Date:"));
+	    contentPanel.add(dueDateField);
+	    contentPanel.add(new JLabel("Crop ID (Optional):"));
+	    contentPanel.add(cropIdCombo);
+	    contentPanel.add(new JLabel("Priority:"));
+	    contentPanel.add(priorityCombo);
+	    contentPanel.add(new JLabel("Status:"));
+	    contentPanel.add(statusCombo);
 
-		JButton submitButton = new JButton("Add Task");
-		submitButton.setFocusPainted(false);
+	    JButton submitButton = new JButton("Add Task");
+	    submitButton.setFocusPainted(false);
 
-		submitButton.addActionListener(e -> {
-			try {
-				Date dueDate = new java.sql.Date(dueDateField.getDate().getTime());
-				Integer cropId = (Integer) cropIdCombo.getSelectedItem();
-				TasksTableManager.addTask(
-						taskNameField.getText(),
-						assignedToField.getText(),
-						dueDate,
-						cropId,
-						(String) priorityCombo.getSelectedItem(),
-						(String) statusCombo.getSelectedItem()
-						);
-				dialog.dispose();
-			} catch (IllegalArgumentException ex) {
-				JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD");
-			}
-		});
+	    submitButton.addActionListener(e -> {
+	        // Validate required fields
+	        if (taskNameField.getText().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(dialog, 
+	                "Task name cannot be empty!", 
+	                "Validation Error", 
+	                JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+	        
+	        if (assignedToField.getText().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(dialog, 
+	                "Assigned to field cannot be empty!", 
+	                "Validation Error", 
+	                JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+	        
+	        if (dueDateField.getDate() == null) {
+	            JOptionPane.showMessageDialog(dialog, 
+	                "Please select a due date!", 
+	                "Validation Error", 
+	                JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+	        
+	        try {
+	            Date dueDate = new java.sql.Date(dueDateField.getDate().getTime());
+	            
+	            // Check if due date is in the past
+	            Date currentDate = new Date(System.currentTimeMillis());
+	            if (dueDate.before(currentDate)) {
+	                int confirm = JOptionPane.showConfirmDialog(dialog,
+	                    "The due date is in the past. Are you sure you want to continue?",
+	                    "Confirm Past Due Date",
+	                    JOptionPane.YES_NO_OPTION);
+	                
+	                if (confirm != JOptionPane.YES_OPTION) {
+	                    return;
+	                }
+	            }
+	            
+	            Integer cropId = (Integer) cropIdCombo.getSelectedItem();
+	            TasksTableManager.addTask(
+	                taskNameField.getText().trim(),
+	                assignedToField.getText().trim(),
+	                dueDate,
+	                cropId,
+	                (String) priorityCombo.getSelectedItem(),
+	                (String) statusCombo.getSelectedItem()
+	            );
+	            dialog.dispose();
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(dialog, 
+	                "Error adding task: " + ex.getMessage(), 
+	                "Error", 
+	                JOptionPane.ERROR_MESSAGE);
+	        }
+	    });
 
-		contentPanel.add(new JPanel());
-		contentPanel.add(submitButton);
+	    contentPanel.add(new JPanel());
+	    contentPanel.add(submitButton);
 
-		dialog.setContentPane(contentPanel);
-		dialog.pack();
-		dialog.setLocationRelativeTo(mainFrame);
-		dialog.setVisible(true);
+	    dialog.setContentPane(contentPanel);
+	    dialog.pack();
+	    dialog.setLocationRelativeTo(mainFrame);
+	    dialog.setVisible(true);
 	}
 
 	/*--------------------- EDIT TASK ---------------------*/
