@@ -93,6 +93,27 @@ public class InventoryTableManager {
 		        inventoryTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		    }
 		}
+		
+		inventoryTable.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setOpaque(true);
+                setBackground(Color.decode("#27AE60")); // Green like buttons
+                setForeground(Color.WHITE);
+                setFont(new Font("Roboto", Font.BOLD, 16));
+                setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 2, 0, Color.decode("#2C3E50")),
+                    BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                ));
+                setHorizontalAlignment(SwingConstants.CENTER);
+                return this;
+            }
+        });
+        inventoryTable.getTableHeader().setPreferredSize(new Dimension(0, 40));
+        inventoryTable.getTableHeader().setOpaque(false);
 
 		inventoryTable.getTableHeader().setReorderingAllowed(false);
 		refreshInventoryTable();

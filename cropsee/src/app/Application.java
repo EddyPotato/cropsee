@@ -719,6 +719,42 @@ public class Application {
 		chartPanel.revalidate();
 		chartPanel.repaint();
 	}
+	
+	private void styleTable(JTable table) {
+	    // Center all columns
+	    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	    centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+	    for (int i = 0; i < table.getColumnCount(); i++) {
+	        table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+	    }
+	    
+	    // Style header
+	    table.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+	        @Override
+	        public Component getTableCellRendererComponent(JTable table, Object value,
+	                boolean isSelected, boolean hasFocus, int row, int column) {
+	            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	            
+	            // Match navigation button color (#27AE60)
+	            setOpaque(true);
+	            setBackground(Color.decode("#27AE60")); 
+	            setForeground(Color.WHITE);
+	            setFont(new Font("Roboto", Font.BOLD, 16));
+	            setBorder(BorderFactory.createCompoundBorder(
+	                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.decode("#2C3E50")), // Dark blue border
+	                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+	            ));
+	            setHorizontalAlignment(SwingConstants.CENTER);
+	            return this;
+	        }
+	    });
+	    
+	    table.getTableHeader().setPreferredSize(new Dimension(0, 40));
+	    table.getTableHeader().setReorderingAllowed(false);
+	    table.setRowHeight(30);
+	    table.setFont(new Font("Roboto", Font.PLAIN, 14));
+	}
+
 
 
 	/*_____________________ METHODS _____________________*/
@@ -1053,31 +1089,13 @@ public class Application {
 
 		/*_____________________ TABLE _____________________*/
 		JTable initialCropTable = new JTable(CropTableManager.model);
-		initialCropTable.getTableHeader().setReorderingAllowed(false);
-		initialCropTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 14));
-		initialCropTable.setRowHeight(30);
-
-		// Center all columns
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		for (int i = 0; i < initialCropTable.getColumnCount(); i++) {
-			initialCropTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-		}
-
+		styleTable(initialCropTable);
 		JScrollPane scrollableCropTable = new JScrollPane(initialCropTable);
 		cropContainer.add(scrollableCropTable);
-
+		
 		/*_____________________ TABLE _____________________*/
 		JTable initialTaskTable = new JTable(TasksTableManager.model);
-		initialTaskTable.getTableHeader().setReorderingAllowed(false);
-		initialTaskTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 14));
-		initialTaskTable.setRowHeight(30);
-
-		// Center all columns
-		for (int i = 0; i < initialTaskTable.getColumnCount(); i++) {
-			initialTaskTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-		}
-
+		styleTable(initialTaskTable);
 		JScrollPane scrollableTaskTable = new JScrollPane(initialTaskTable);
 		taskContainer.add(scrollableTaskTable);
 
