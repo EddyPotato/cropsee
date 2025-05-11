@@ -2,5 +2,5 @@
 *.class
 
 # Ignore bin and build directories
-/cropsee/bin/
-/cropsee/build/
+/bin/
+/build/
