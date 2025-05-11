@@ -999,19 +999,21 @@ public class Application {
 		
 		/*_____________________ MAIN _____________________*/
 		JPanel tablesContainer = new JPanel();
-		tablesContainer.setLayout(new GridLayout(1, 2, 8, 8)); // 1 row, 2 columns, 8px gaps
+		tablesContainer.setLayout(new GridLayout(1, 2, 0, 0)); // 1 row, 2 columns, 8px gaps
 		tablesContainer.setPreferredSize(new Dimension(10000, 400));
 		tablesContainer.setMaximumSize(new Dimension(10000, Integer.MAX_VALUE));
 		tablesContainer.setBackground(Color.decode("#F2F2F2"));
 
 		/*_____________________ CONTAINER (FOR BORDERING) _____________________*/
 		JPanel cropContainer = new JPanel(new BorderLayout());
-		TitledBorder cropBorder = BorderFactory.createTitledBorder("CROPS"); // BORDER NAME
+		TitledBorder cropBorder = new TitledBorder(BorderFactory.createEmptyBorder(), "CROPS");
+		cropBorder.setTitleFont(new Font("Roboto", Font.BOLD, 20));
 		cropBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
 		cropContainer.setBorder(cropBorder);
 
 		JPanel taskContainer = new JPanel(new BorderLayout());
-		TitledBorder taskBorder = BorderFactory.createTitledBorder("TASKS"); // BORDER NAME
+		TitledBorder taskBorder = new TitledBorder(BorderFactory.createEmptyBorder(), "TASKS");
+		taskBorder.setTitleFont(new Font("Roboto", Font.BOLD, 20));
 		taskBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
 		taskContainer.setBorder(taskBorder);
 
