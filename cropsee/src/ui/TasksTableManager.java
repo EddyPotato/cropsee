@@ -15,7 +15,7 @@ import app.DBConnection;
 public class TasksTableManager {
 	public static DefaultTableModel model;
 	public static JTable tasksTable;
-
+	
 	public static void addTasksTable(JPanel tableContainer) {
 		tableContainer.setLayout(new BorderLayout());
 		String[] columnNames = { "Task ID", "Task Name", "Assigned To", "Due Date", "Crop ID", "Priority", "Status" };
