@@ -35,6 +35,27 @@ public class TasksTableManager {
 		for (int i = 0; i < tasksTable.getColumnCount(); i++) {
 			tasksTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
+		
+		tasksTable.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                setOpaque(true);
+                setBackground(Color.decode("#27AE60")); // Green like buttons
+                setForeground(Color.WHITE);
+                setFont(new Font("Roboto", Font.BOLD, 16));
+                setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 2, 0, Color.decode("#2C3E50")),
+                    BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                ));
+                setHorizontalAlignment(SwingConstants.CENTER);
+                return this;
+            }
+        });
+        tasksTable.getTableHeader().setPreferredSize(new Dimension(0, 40));
+        tasksTable.getTableHeader().setOpaque(false);
 
 		tasksTable.getTableHeader().setReorderingAllowed(false);
 		refreshTaskTable();
@@ -42,7 +63,6 @@ public class TasksTableManager {
 		JScrollPane tableScrollPane = new JScrollPane(tasksTable);
 		tableScrollPane.setPreferredSize(new Dimension(700, 400));
 
-		tasksTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 16));
 		tasksTable.setRowHeight(30);
 
 		tableContainer.add(tableScrollPane, BorderLayout.CENTER);
