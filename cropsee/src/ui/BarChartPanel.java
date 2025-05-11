@@ -8,7 +8,7 @@ public class BarChartPanel extends JPanel {
     private Map<String, Integer> chartData;
     private final Color barColor = new Color(30, 138, 56);
     private final Color textColor = Color.BLACK;
-    
+
     public BarChartPanel(Map<String, Integer> data) {
         this.chartData = data;
         setPreferredSize(new Dimension(600, 400));
@@ -21,17 +21,11 @@ public class BarChartPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Handle empty data case
-        if (chartData.isEmpty() || chartData.values().stream().allMatch(v -> v == 0)) {
-            drawNoDataMessage(g2d);
-            return;
-        }
-
         int padding = 50;
         int chartWidth = getWidth() - padding * 2;
         int chartHeight = getHeight() - padding * 2;
 
-        // Draw chart background
+        // Draw chart background and axes regardless of data
         g2d.setColor(Color.WHITE);
         g2d.fillRect(padding, padding, chartWidth, chartHeight);
 
@@ -39,13 +33,15 @@ public class BarChartPanel extends JPanel {
         g2d.drawLine(padding, padding, padding, padding + chartHeight); // Y-axis
         g2d.drawLine(padding, padding + chartHeight, padding + chartWidth, padding + chartHeight); // X-axis
 
+        if (chartData.isEmpty() || chartData.values().stream().allMatch(v -> v == 0)) {
+            drawNoDataMessage(g2d);
+            return;
+        }
+
         int barCount = chartData.size();
         int barWidth = (chartWidth - 20) / barCount;
-        
-        // Prevent division by zero
-        int maxValue = Math.max(1, chartData.values().stream()
-                .max(Integer::compare)
-                .orElse(1));
+
+        int maxValue = Math.max(1, chartData.values().stream().max(Integer::compare).orElse(1));
 
         int x = padding + 10;
         for (Map.Entry<String, Integer> entry : chartData.entrySet()) {
@@ -66,7 +62,7 @@ public class BarChartPanel extends JPanel {
 
     private void drawNoDataMessage(Graphics2D g2d) {
         g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("Tahoma", Font.BOLD, 20));
+        g2d.setFont(new Font("Roboto", Font.PLAIN, 20));
         String message = "No data available";
         FontMetrics fm = g2d.getFontMetrics();
         int textWidth = fm.stringWidth(message);
@@ -78,9 +74,9 @@ public class BarChartPanel extends JPanel {
     private void drawCenteredText(Graphics2D g2d, String text, int x, int y) {
         FontMetrics fm = g2d.getFontMetrics();
         int textWidth = fm.stringWidth(text);
-        g2d.drawString(text, x - textWidth/2, y);
+        g2d.drawString(text, x - textWidth / 2, y);
     }
-    
+
     public void setData(Map<String, Integer> newData) {
         this.chartData = newData;
         repaint();
