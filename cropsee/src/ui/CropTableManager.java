@@ -26,7 +26,16 @@ public class CropTableManager {
 		tableListofCrops.setLayout(new BorderLayout());
 
 		// ALL COLUMN NAMES FOR THE CROP TABLE
-		String[] columnNames = {"Crop ID", "Crop Name", "Planting Date", "Harvest Date", "Water Schedule", "Fertilizer Schedule", "Growth Stage", "Status", "Note"};
+		String[] columnNames = {
+				"Crop ID",
+				"Crop Name", 
+				"Planting Date", 
+				"Harvest Date", 
+				"Water Schedule", 
+				"Fertilizer Schedule", 
+				"Growth Stage", 
+				"Status", 
+				"Note"};
 
 		// CREATING THE TABLE USING THE COLUMN NAMES
 		model = new DefaultTableModel(columnNames, 0) {
