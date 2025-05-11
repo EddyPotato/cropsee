@@ -1,4 +1,4 @@
-package ui;
+package ui_managers;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,13 +12,22 @@ import java.util.Map;
 
 import app.DBConnection;
 
-public class TasksTableManager {
+@SuppressWarnings("serial")
+public class Task_Manager {
 	public static DefaultTableModel model;
 	public static JTable tasksTable;
-	
+
 	public static void addTasksTable(JPanel tableContainer) {
 		tableContainer.setLayout(new BorderLayout());
-		String[] columnNames = { "Task ID", "Task Name", "Assigned To", "Due Date", "Crop ID", "Priority", "Status" };
+		String[] columnNames = {
+				"Task ID", 
+				"Task Name", 
+				"Assigned To", 
+				"Due Date", 
+				"Crop ID", 
+				"Priority", 
+				"Status"
+		};
 
 		model = new DefaultTableModel(columnNames, 0) {
 			@Override
@@ -27,47 +36,45 @@ public class TasksTableManager {
 			}
 		};
 
+		/*_____________________ TABLE _____________________*/
 		tasksTable = new JTable(model);
 
-		// Center all columns
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer(); // CENTER
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		for (int i = 0; i < tasksTable.getColumnCount(); i++) {
 			tasksTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
-		
-		tasksTable.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
-                setOpaque(true);
-                setBackground(Color.decode("#27AE60")); // Green like buttons
-                setForeground(Color.WHITE);
-                setFont(new Font("Roboto", Font.BOLD, 16));
-                setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createMatteBorder(0, 0, 2, 0, Color.decode("#2C3E50")),
-                    BorderFactory.createEmptyBorder(5, 10, 5, 10)
-                ));
-                setHorizontalAlignment(SwingConstants.CENTER);
-                return this;
-            }
-        });
-        tasksTable.getTableHeader().setPreferredSize(new Dimension(0, 40));
-        tasksTable.getTableHeader().setOpaque(false);
 
+		tasksTable.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value,
+					boolean isSelected, boolean hasFocus, int row, int column) {
+				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				setOpaque(true);
+				setBackground(Color.decode("#27AE60")); // GREEN
+				setForeground(Color.WHITE);
+				setFont(new Font("Roboto", Font.BOLD, 16));
+				setBorder(BorderFactory.createCompoundBorder(
+						BorderFactory.createMatteBorder(0, 0, 2, 0, Color.decode("#2C3E50")),
+						BorderFactory.createEmptyBorder(5, 10, 5, 10)
+						));
+				setHorizontalAlignment(SwingConstants.CENTER);
+				return this;
+			}
+		});
+
+		/*_____________________ CUSTOMIZATION _____________________*/
+		tasksTable.getTableHeader().setPreferredSize(new Dimension(0, 40));
+		tasksTable.getTableHeader().setOpaque(false);
 		tasksTable.getTableHeader().setReorderingAllowed(false);
 		refreshTaskTable();
-
 		JScrollPane tableScrollPane = new JScrollPane(tasksTable);
 		tableScrollPane.setPreferredSize(new Dimension(700, 400));
-
 		tasksTable.setRowHeight(30);
-
 		tableContainer.add(tableScrollPane, BorderLayout.CENTER);
 	}
 
+	/*_____________________ REFRESH _____________________*/
 	public static void refreshTaskTable() {
 		model.setRowCount(0);
 		List<Object[]> tasks = fetchTasksFromDatabase();
