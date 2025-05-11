@@ -46,6 +46,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;
 
@@ -65,9 +66,13 @@ public class Application {
 	private CardLayout cardLayout = new CardLayout();
 	private Connection connection; // IT IS USED BALIW LANG ECLIPSE
 	private JTabbedPane reportTabs;
+	List<JButton> sidebarBtns;
+
+	Color normalColor = Color.decode("#27AE60");
+	Color hoverColor = Color.decode("#2ECC71");
+	Color activeColor = Color.decode("#16A085"); // A color to indicate the active button
 
 	/*_____________________ REUSABLE METHODS _____________________*/
-
 	private Component createBorderGap() {
 		return Box.createRigidArea(new Dimension(0, 5));
 	}
@@ -107,7 +112,7 @@ public class Application {
 		submitButton.addActionListener(e -> {
 			try {
 				Date plantingDate = new java.sql.Date(plantingDateField.getDate().getTime());
-				
+
 				// CHECK IF NULL TO ALLOW NULL
 				Date harvestDate = null;
 				if (harvestDateField.getDate() != null) {
@@ -188,12 +193,12 @@ public class Application {
 				}
 
 				CropTableManager.updateCrop(
-					cropId,
-					nameField.getText(),
-					updatedPlantingDate,
-					updatedHarvestDate,
-					(String) statusCombo.getSelectedItem()
-				);
+						cropId,
+						nameField.getText(),
+						updatedPlantingDate,
+						updatedHarvestDate,
+						(String) statusCombo.getSelectedItem()
+						);
 
 				dialog.dispose();
 			} catch (NullPointerException ex) {
@@ -296,88 +301,88 @@ public class Application {
 	/*--------------------- EDIT TASK ---------------------*/
 	/*--------------------- EDIT TASK ---------------------*/
 	private void showEditTaskDialog() {
-	    int selectedRow = TasksTableManager.tasksTable.getSelectedRow();
-	    if (selectedRow == -1) {
-	        JOptionPane.showMessageDialog(mainFrame, "Please select a task to edit!");
-	        return;
-	    }
+		int selectedRow = TasksTableManager.tasksTable.getSelectedRow();
+		if (selectedRow == -1) {
+			JOptionPane.showMessageDialog(mainFrame, "Please select a task to edit!");
+			return;
+		}
 
-	    int taskId = (int) TasksTableManager.model.getValueAt(selectedRow, 0);
-	    String taskName = (String) TasksTableManager.model.getValueAt(selectedRow, 1);
-	    String assignedTo = (String) TasksTableManager.model.getValueAt(selectedRow, 2);
-	    Date dueDate = (Date) TasksTableManager.model.getValueAt(selectedRow, 3);
-	    Integer cropId = (Integer) TasksTableManager.model.getValueAt(selectedRow, 4);
-	    String priority = (String) TasksTableManager.model.getValueAt(selectedRow, 5);
-	    String status = (String) TasksTableManager.model.getValueAt(selectedRow, 6);
+		int taskId = (int) TasksTableManager.model.getValueAt(selectedRow, 0);
+		String taskName = (String) TasksTableManager.model.getValueAt(selectedRow, 1);
+		String assignedTo = (String) TasksTableManager.model.getValueAt(selectedRow, 2);
+		Date dueDate = (Date) TasksTableManager.model.getValueAt(selectedRow, 3);
+		Integer cropId = (Integer) TasksTableManager.model.getValueAt(selectedRow, 4);
+		String priority = (String) TasksTableManager.model.getValueAt(selectedRow, 5);
+		String status = (String) TasksTableManager.model.getValueAt(selectedRow, 6);
 
-	    JDialog dialog = new JDialog(mainFrame, "Edit Task", true);
-	    dialog.setPreferredSize(new Dimension(500, 400));
-	    JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5));
-	    contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+		JDialog dialog = new JDialog(mainFrame, "Edit Task", true);
+		dialog.setPreferredSize(new Dimension(500, 400));
+		JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5));
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-	    // MAKES THE TEXTFIELDS AND THE JCOMBOBOX
-	    JTextField taskNameField = new JTextField(taskName);
-	    JTextField assignedToField = new JTextField(assignedTo);
-	    JDateChooser dueDateField = new JDateChooser(dueDate);
-	    JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
-	    cropIdCombo.setSelectedItem(cropId);
-	    JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
-	    priorityCombo.setSelectedItem(priority);
-	    JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
-	    statusCombo.setSelectedItem(status);
+		// MAKES THE TEXTFIELDS AND THE JCOMBOBOX
+		JTextField taskNameField = new JTextField(taskName);
+		JTextField assignedToField = new JTextField(assignedTo);
+		JDateChooser dueDateField = new JDateChooser(dueDate);
+		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
+		cropIdCombo.setSelectedItem(cropId);
+		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
+		priorityCombo.setSelectedItem(priority);
+		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
+		statusCombo.setSelectedItem(status);
 
-	    contentPanel.add(new JLabel("Task Name:"));
-	    contentPanel.add(taskNameField);
-	    contentPanel.add(new JLabel("Assigned To:"));
-	    contentPanel.add(assignedToField);
-	    contentPanel.add(new JLabel("Due Date (YYYY-MM-DD):"));
-	    contentPanel.add(dueDateField);
-	    contentPanel.add(new JLabel("Crop ID (Optional):"));
-	    contentPanel.add(cropIdCombo);
-	    contentPanel.add(new JLabel("Priority:"));
-	    contentPanel.add(priorityCombo);
-	    contentPanel.add(new JLabel("Status:"));
-	    contentPanel.add(statusCombo);
+		contentPanel.add(new JLabel("Task Name:"));
+		contentPanel.add(taskNameField);
+		contentPanel.add(new JLabel("Assigned To:"));
+		contentPanel.add(assignedToField);
+		contentPanel.add(new JLabel("Due Date (YYYY-MM-DD):"));
+		contentPanel.add(dueDateField);
+		contentPanel.add(new JLabel("Crop ID (Optional):"));
+		contentPanel.add(cropIdCombo);
+		contentPanel.add(new JLabel("Priority:"));
+		contentPanel.add(priorityCombo);
+		contentPanel.add(new JLabel("Status:"));
+		contentPanel.add(statusCombo);
 
-	    JButton submitButton = new JButton("Update Task");
-	    submitButton.setFocusPainted(false);
+		JButton submitButton = new JButton("Update Task");
+		submitButton.setFocusPainted(false);
 
-	    submitButton.addActionListener(e -> {
-	        // Check if due date is selected before updating
-	        java.util.Date selectedDate = dueDateField.getDate();
-	        if (selectedDate == null) {
-	            JOptionPane.showMessageDialog(dialog,
-	                "Please select a due date before continuing.",
-	                "Missing Due Date",
-	                JOptionPane.ERROR_MESSAGE);
-	            return; // stop further execution if no date selected
-	        }
+		submitButton.addActionListener(e -> {
+			// Check if due date is selected before updating
+			java.util.Date selectedDate = dueDateField.getDate();
+			if (selectedDate == null) {
+				JOptionPane.showMessageDialog(dialog,
+						"Please select a due date before continuing.",
+						"Missing Due Date",
+						JOptionPane.ERROR_MESSAGE);
+				return; // stop further execution if no date selected
+			}
 
-	        try {
-	            // Convert the selected date to sql.Date before updating
-	            Date newDueDate = new java.sql.Date(selectedDate.getTime());
-	            TasksTableManager.updateTask(
-	                    taskId,
-	                    taskNameField.getText(),
-	                    assignedToField.getText(),
-	                    newDueDate,
-	                    (Integer) cropIdCombo.getSelectedItem(),
-	                    (String) priorityCombo.getSelectedItem(),
-	                    (String) statusCombo.getSelectedItem()
-	            );
-	            dialog.dispose(); // Close the dialog
-	        } catch (IllegalArgumentException ex) {
-	            JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD");
-	        }
-	    });
+			try {
+				// Convert the selected date to sql.Date before updating
+				Date newDueDate = new java.sql.Date(selectedDate.getTime());
+				TasksTableManager.updateTask(
+						taskId,
+						taskNameField.getText(),
+						assignedToField.getText(),
+						newDueDate,
+						(Integer) cropIdCombo.getSelectedItem(),
+						(String) priorityCombo.getSelectedItem(),
+						(String) statusCombo.getSelectedItem()
+						);
+				dialog.dispose(); // Close the dialog
+			} catch (IllegalArgumentException ex) {
+				JOptionPane.showMessageDialog(dialog, "Invalid date format! Use YYYY-MM-DD");
+			}
+		});
 
-	    contentPanel.add(new JPanel());  // Empty space
-	    contentPanel.add(submitButton);
+		contentPanel.add(new JPanel());  // Empty space
+		contentPanel.add(submitButton);
 
-	    dialog.setContentPane(contentPanel);
-	    dialog.pack();
-	    dialog.setLocationRelativeTo(mainFrame);
-	    dialog.setVisible(true);
+		dialog.setContentPane(contentPanel);
+		dialog.pack();
+		dialog.setLocationRelativeTo(mainFrame);
+		dialog.setVisible(true);
 	}
 
 	/*--------------------- DELETE TASK ---------------------*/
@@ -824,37 +829,51 @@ public class Application {
 		sidePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 		sidePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // top, left, bottom, right
 
-		/*_____________________ CONTENT _____________________*/
+		// Inside your main GUI class or the relevant method
+
+		// Buttons for the sidebar
 		JButton dashboardBtn = new JButton("<html>DASHBOARD</html>");
 		JButton manageBtn = new JButton("<html><center>CROP<br>MANAGEMENT</center></html>");
 		JButton tasksBtn = new JButton("<html>TASKS</html>");
 		JButton monitorBtn = new JButton("<html><center>INVENTORY MANAGEMENT</center></html>");
 		JButton reportsBtn = new JButton("<html>REPORTS</html>");
 
-		// CUSTOMIZATION
+		// List of buttons
+		sidebarBtns = Arrays.asList(dashboardBtn, tasksBtn, manageBtn, monitorBtn, reportsBtn);
+
+		// Array of buttons for customization
 		JButton[] sideButtons = {dashboardBtn, manageBtn, tasksBtn, monitorBtn, reportsBtn};
-		Color normalColor = Color.decode("#27AE60");
-		Color hoverColor = Color.decode("#2ECC71");
+
+
+		// Set up button customization
 		for (JButton btn : sideButtons) {
 			btn.setFont(new Font("Roboto", Font.BOLD, 18));
 			btn.setFocusPainted(false);
 			btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-			btn.setBackground(normalColor); // BACKGROUND COLOR
-			btn.setForeground(Color.decode("#FFFFFF")); // TEXT COLOR
+			btn.setBackground(normalColor); // Default background color
+			btn.setForeground(Color.decode("#FFFFFF")); // Text color
 
 			// Hover effect using MouseListener
 			btn.addMouseListener(new java.awt.event.MouseAdapter() {
 				@Override
 				public void mouseEntered(java.awt.event.MouseEvent evt) {
-					btn.setBackground(hoverColor);
+					if (!btn.getBackground().equals(activeColor)) {
+						btn.setBackground(hoverColor); // Change background when hovered (unless it's the active button)
+					}
 				}
 
 				@Override
 				public void mouseExited(java.awt.event.MouseEvent evt) {
-					btn.setBackground(normalColor);
+					if (!btn.getBackground().equals(activeColor)) {
+						btn.setBackground(normalColor); // Revert to normal color when not hovered
+					}
 				}
 			});
-			sidePanel.add(btn);
+
+			// Add action listener to set the active button
+			btn.addActionListener(e -> setActiveButton(btn));
+
+			sidePanel.add(btn); // Add button to the side panel
 		}
 
 		/*--------------------- PANEL #3: CENTER ---------------------*/
@@ -1235,4 +1254,18 @@ public class Application {
 		tasksBtn.addActionListener(e -> { TasksTableManager.refreshTaskTable(); cardLayout.show(mainPanel, "tasks"); });
 		reportsBtn.addActionListener(e -> cardLayout.show(mainPanel, "reports"));
 	}
+
+	// Method to set the active button
+	private void setActiveButton(JButton activeButton) {
+		for (JButton btn : sidebarBtns) {
+			if (btn == activeButton) {
+				btn.setBackground(activeColor); // Highlight active button
+				btn.setFont(new Font("Roboto", Font.BOLD, 18));
+			} else {
+				btn.setBackground(normalColor); // Revert others to normal color
+				btn.setFont(new Font("Roboto", Font.BOLD, 18));
+			}
+		}
+	}
+
 }
