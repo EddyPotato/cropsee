@@ -26,7 +26,7 @@ public class CropTableManager {
 		tableListofCrops.setLayout(new BorderLayout());
 
 		// ALL COLUMN NAMES FOR THE CROP TABLE
-		String[] columnNames = {"Crop ID", "Crop Name", "Planting Date", "Harvest Date", "Status"};
+		String[] columnNames = {"Crop ID", "Crop Name", "Planting Date", "Harvest Date", "Water Schedule", "Fertilizer Schedule", "Growth Stage", "Status", "Note"};
 
 		// CREATING THE TABLE USING THE COLUMN NAMES
 		model = new DefaultTableModel(columnNames, 0) {
@@ -38,7 +38,8 @@ public class CropTableManager {
 
 		// MAKING THE JAVA TABLE USING CLASS-LEVEL VARIABLE WHEREIN THE TABLE VALUES ARE ON THE MODEL ABOVE
 		cropTable = new JTable(model);
-		
+		cropTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
 		// Center all columns
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
