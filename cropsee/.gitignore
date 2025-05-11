@@ -1,0 +1,16 @@
+ Ignore compiled class files
+*.class
+
+# Ignore bin and build folders
+/cropsee/bin/
+/cropsee/build/
+
+# Ignore IDE-specific files
+/cropsee/.classpath
+/cropsee/.project
+/cropsee/.settings/
+
+/cropsee/.vscode/
+.idea/
+*.iml
+out/
