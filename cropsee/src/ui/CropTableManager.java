@@ -170,7 +170,8 @@ public class CropTableManager {
 			refreshCropTable(); // REFRESH AFTERWARDS
 
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Error deleting crop: " + e.getMessage()); // ERROR MESSAGE
+			// ERROR MESSAGE ATTACHMENT TO CROP_ID AND TASK_ID
+			JOptionPane.showMessageDialog(null, "Error: " + "There are still tasks associated with the crop.\n" + e.getMessage());
 		}
 	}
 	
