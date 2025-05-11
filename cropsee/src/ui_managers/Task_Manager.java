@@ -24,7 +24,7 @@ public class Task_Manager {
 				"Task Name", 
 				"Assigned To", 
 				"Due Date", 
-				"Crop ID", 
+				"Crop ID (Optional)", 
 				"Priority", 
 				"Status"
 		};
@@ -83,6 +83,7 @@ public class Task_Manager {
 		}
 	}
 
+	/*________________________ GET DATA ________________________*/
 	private static List<Object[]> fetchTasksFromDatabase() {
 		List<Object[]> tasks = new ArrayList<>();
 		String query = "SELECT task_id, task_name, assigned_to, due_date, crop_id, priority, status FROM tasks";
@@ -109,6 +110,7 @@ public class Task_Manager {
 		return tasks;
 	}
 
+	/*________________________ ADD TASKS ________________________*/
 	public static void addTask(String taskName, String assignedTo, Date dueDate, 
 			Integer cropId, String priority, String status) {
 		String query = "INSERT INTO tasks (task_name, assigned_to, due_date, crop_id, priority, status) " +
@@ -131,6 +133,7 @@ public class Task_Manager {
 		}
 	}
 
+	/*________________________ UPDATE TASKS ________________________*/
 	public static void updateTask(int taskId, String taskName, String assignedTo, Date dueDate, 
 			Integer cropId, String priority, String status) {
 		String query = "UPDATE tasks SET task_name=?, assigned_to=?, due_date=?, " +
@@ -154,6 +157,7 @@ public class Task_Manager {
 		}
 	}
 
+	/*________________________ DELETE TASKS ________________________*/
 	public static void deleteTask(int taskId) {
 		String query = "DELETE FROM tasks WHERE task_id = ?";
 
@@ -169,6 +173,7 @@ public class Task_Manager {
 		}
 	}
 
+	/*________________________ MARK COMPLETE ________________________*/
 	public static void markTaskComplete(int taskId) {
 		String query = "UPDATE tasks SET status = 'Completed' WHERE task_id = ?";
 
@@ -183,6 +188,8 @@ public class Task_Manager {
 			JOptionPane.showMessageDialog(null, "Error marking task complete: " + e.getMessage());
 		}
 	}
+	
+	/*________________________ REMOVE COMPLETED TASKS ________________________*/
 	public static void removeCompletedTasks() {
 		String query = "DELETE FROM tasks WHERE status = 'Completed'";
 
@@ -199,6 +206,8 @@ public class Task_Manager {
 			JOptionPane.showMessageDialog(null, "Error removing tasks: " + e.getMessage());
 		}
 	}
+
+	/*________________________ TASK STATUS (FOR REPORTING) ________________________*/
 	public static Map<String, Integer> getTaskStatusData() {
 		Map<String, Integer> data = new LinkedHashMap<>();
 		String query = "SELECT status, COUNT(*) AS count FROM tasks GROUP BY status";
@@ -214,5 +223,124 @@ public class Task_Manager {
 			JOptionPane.showMessageDialog(null, "Error loading task data: " + e.getMessage());
 		}
 		return data;
+	}
+
+	/*________________________ UPCOMING TASKS ________________________*/
+	public static List<Object[]> getUpcomingTasksThisWeek() {
+		List<Object[]> tasks = new ArrayList<>();
+		String query = """
+					SELECT task_id, task_name, assigned_to, due_date, crop_id, priority, status
+					FROM tasks
+					WHERE due_date BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY)
+					ORDER BY due_date ASC
+				""";
+
+		try (Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				Object[] row = {
+						rs.getInt("task_id"),
+						rs.getString("task_name"),
+						rs.getString("assigned_to"),
+						rs.getDate("due_date"),
+						rs.getObject("crop_id"),
+						rs.getString("priority"),
+						rs.getString("status")
+				};
+				tasks.add(row);
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error loading upcoming tasks: " + e.getMessage());
+		}
+		return tasks;
+	}
+
+	/*________________________ OVERDUE TASKS ________________________*/
+	public static List<Object[]> getOverdueTasks() {
+		List<Object[]> tasks = new ArrayList<>();
+		String query = """
+					SELECT task_id, task_name, assigned_to, due_date, crop_id, priority, status
+					FROM tasks
+					WHERE due_date < CURRENT_DATE AND status != 'Completed'
+					ORDER BY due_date ASC
+				""";
+
+		try (Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				Object[] row = {
+						rs.getInt("task_id"),
+						rs.getString("task_name"),
+						rs.getString("assigned_to"),
+						rs.getDate("due_date"),
+						rs.getObject("crop_id"),
+						rs.getString("priority"),
+						rs.getString("status")
+				};
+				tasks.add(row);
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error loading overdue tasks: " + e.getMessage());
+		}
+		return tasks;
+	}
+
+	/*________________________ GROUP TASKS BY CROP ________________________*/
+	public static Map<Integer, List<Object[]>> getTasksGroupedByCrop() {
+		Map<Integer, List<Object[]>> cropTasks = new LinkedHashMap<>();
+		String query = "SELECT * FROM tasks ORDER BY crop_id, due_date";
+
+		try (Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query)) {
+
+			while (rs.next()) {
+				int cropId = rs.getInt("crop_id");
+				Object[] task = {
+						rs.getInt("task_id"),
+						rs.getString("task_name"),
+						rs.getString("assigned_to"),
+						rs.getDate("due_date"),
+						cropId,
+						rs.getString("priority"),
+						rs.getString("status")
+				};
+				cropTasks.computeIfAbsent(cropId, k -> new ArrayList<>()).add(task);
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error grouping tasks by crop: " + e.getMessage());
+		}
+		return cropTasks;
+	}
+
+	/*________________________ REMINDERS LOG ________________________*/
+	public static List<Object[]> getRemindersLog() {
+		List<Object[]> logs = new ArrayList<>();
+		String query = """
+					SELECT r.reminder_id, t.task_name, r.reminder_type, r.reminder_date, r.notes
+					FROM reminders r
+					JOIN tasks t ON r.task_id = t.task_id
+					ORDER BY r.reminder_date ASC
+				""";
+
+		try (Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				Object[] row = {
+						rs.getInt("reminder_id"),
+						rs.getString("task_name"),
+						rs.getString("reminder_type"),
+						rs.getDate("reminder_date"),
+						rs.getString("notes")
+				};
+				logs.add(row);
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error loading reminders: " + e.getMessage());
+		}
+		return logs;
 	}
 }

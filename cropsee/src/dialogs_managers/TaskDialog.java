@@ -29,7 +29,7 @@ public class TaskDialog {
 		this.mainFrame = mainFrame;
 	}
 
-	/*________________________ ADD TASK DIALOG ________________________*/
+	/*------------------------ ADD TASK DIALOG ------------------------*/
 	// Class-level fields to remember last used priority and status
 	private String lastUsedPriority = "Medium";
 	private String lastUsedStatus = "Pending";
@@ -38,27 +38,11 @@ public class TaskDialog {
 	public void showAddTaskDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
 		dialog.setPreferredSize(new Dimension(500, 400));
-
-		JPanel contentPanel = new JPanel(new GridBagLayout());
+		JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5)); // (6 FIELDS + 1 SUBMIT) X 2
 		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		// Components
+		// TEXT FIELDS
 		JTextField taskNameField = new JTextField();
-		JTextField assignedToField = new JTextField();
-		JDateChooser dueDateField = new JDateChooser();
-		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
-		cropIdCombo.insertItemAt(null, 0);
-		cropIdCombo.setSelectedIndex(0);
-
-		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
-		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
-		priorityCombo.setSelectedItem(lastUsedPriority);
-		statusCombo.setSelectedItem(lastUsedStatus);
-
-		// Limit Task Name input length to 50 characters
 		taskNameField.setDocument(new PlainDocument() {
 			@Override
 			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
@@ -68,7 +52,21 @@ public class TaskDialog {
 			}
 		});
 
-		// Helper method to validate required fields
+		JTextField assignedToField = new JTextField();
+		JDateChooser dueDateField = new JDateChooser();
+
+		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds()); // ADDS ALL EXISTING CROP ID
+		cropIdCombo.insertItemAt(null, 0);
+		cropIdCombo.setSelectedIndex(0);
+
+		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
+		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
+
+		// SETTING DEFAULT VALUES
+		priorityCombo.setSelectedItem(lastUsedPriority);
+		statusCombo.setSelectedItem(lastUsedStatus);
+
+		// HELPER METHOD (REQUIRED MAKER)
 		Border defaultBorder = taskNameField.getBorder();
 		Border errorBorder = BorderFactory.createLineBorder(Color.RED);
 
@@ -78,7 +76,7 @@ public class TaskDialog {
 			dueDateField.setBorder(dueDateField.getDate() == null ? errorBorder : defaultBorder);
 		};
 
-		// Live validation listeners
+		// REQUIRED-MAKER LISTENERS
 		taskNameField.getDocument().addDocumentListener(new DocumentListener() {
 			public void insertUpdate(DocumentEvent e) { liveValidate.run(); }
 			public void removeUpdate(DocumentEvent e) { liveValidate.run(); }
@@ -93,15 +91,14 @@ public class TaskDialog {
 
 		dueDateField.getDateEditor().addPropertyChangeListener("date", e -> liveValidate.run());
 
-		// Add fields with labels
-		int row = 0;
+		/*____________ ADD ____________*/
 		String[][] labels = {
-				{"Task Name *", "Enter the task title"},
-				{"Assigned To *", "Enter the assignee"},
-				{"Due Date *", "Pick a due date"},
-				{"Crop ID (Optional)", "Link to a crop if applicable"},
-				{"Priority *", "Select task priority"},
-				{"Status *", "Current progress state"}
+				{"Task Name: ", "Enter the task title"},
+				{"Assigned To: ", "Enter the assignee"},
+				{"Due Date: ", "Pick a due date"},
+				{"Crop ID (Optional): ", "Link to a crop if applicable"},
+				{"Priority: ", "Select task priority"},
+				{"Status: ", "Current progress state"}
 		};
 
 		JComponent[] fields = {
@@ -110,31 +107,30 @@ public class TaskDialog {
 		};
 
 		for (int i = 0; i < labels.length; i++) {
-			gbc.gridx = 0;
-			gbc.gridy = row;
-			contentPanel.add(new JLabel(labels[i][0]), gbc);
-			gbc.gridx = 1;
-			fields[i].setToolTipText(labels[i][1]);
-			contentPanel.add(fields[i], gbc);
-			row++;
+			contentPanel.add(new JLabel(labels[i][0])); // FIXED TO THE 1ST COLUMN
+			fields[i].setToolTipText(labels[i][1]); // FIXED TO THE 2ND COLUMN
+			contentPanel.add(fields[i]);
 		}
 
-		// Submit Button
-		JButton submitButton = new JButton("Add Task");
+		/*____________ SUBMIT ____________*/
+		JButton submitButton = new JButton("ADD TASKS");
 		submitButton.setFocusPainted(false);
 
 		submitButton.addActionListener(e -> {
 			try {
-				// Validation
+				/*____________ VALIDATION ____________*/
 				boolean hasError = false;
+
 				if (taskNameField.getText().trim().isEmpty()) {
 					taskNameField.setBorder(errorBorder);
 					hasError = true;
 				}
+
 				if (assignedToField.getText().trim().isEmpty()) {
 					assignedToField.setBorder(errorBorder);
 					hasError = true;
 				}
+
 				if (dueDateField.getDate() == null) {
 					dueDateField.setBorder(errorBorder);
 					hasError = true;
@@ -145,7 +141,7 @@ public class TaskDialog {
 				Date dueDate = new java.sql.Date(dueDateField.getDate().getTime());
 				Integer cropId = (Integer) cropIdCombo.getSelectedItem();
 
-				// Save last used priority and status
+				/*____________ SAVE LAST PRIORITY ____________*/
 				lastUsedPriority = (String) priorityCombo.getSelectedItem();
 				lastUsedStatus = (String) statusCombo.getSelectedItem();
 
@@ -164,19 +160,15 @@ public class TaskDialog {
 			}
 		});
 
-		gbc.gridy++;
-		gbc.gridx = 0;
-		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.CENTER;
-		contentPanel.add(submitButton, gbc);
-
+		contentPanel.add(new JPanel());
+		contentPanel.add(submitButton);
 		dialog.setContentPane(contentPanel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(mainFrame);
 		dialog.setVisible(true);
 	}
 
-	/*________________________ UPDATE TASK DIALOG ________________________*/
+	/*------------------------ UPDATE TASK DIALOG ------------------------*/
 	@SuppressWarnings("serial")
 	public void showEditTaskDialog() {
 		int selectedRow = Task_Manager.tasksTable.getSelectedRow();
@@ -185,7 +177,7 @@ public class TaskDialog {
 			return;
 		}
 
-		// Get task data
+		/*________________________ PREVIOUS DATA ________________________*/
 		int taskId = (int) Task_Manager.model.getValueAt(selectedRow, 0);
 		String taskName = (String) Task_Manager.model.getValueAt(selectedRow, 1);
 		String assignedTo = (String) Task_Manager.model.getValueAt(selectedRow, 2);
@@ -194,39 +186,15 @@ public class TaskDialog {
 		String priority = (String) Task_Manager.model.getValueAt(selectedRow, 5);
 		String status = (String) Task_Manager.model.getValueAt(selectedRow, 6);
 
-		// Dialog setup
-		JDialog dialog = new JDialog(mainFrame, "Edit Task", true);
+		/*________________________ DIALOG ________________________*/
+		JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
 		dialog.setPreferredSize(new Dimension(500, 400));
-		JPanel contentPanel = new JPanel(new GridBagLayout());
+		JPanel contentPanel = new JPanel(new GridLayout(7, 2, 5, 5)); // (6 FIELDS + 1 SUBMIT) X 2
 		contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		// Components
-		JTextField taskNameField = new JTextField(taskName);
-		JTextField assignedToField = new JTextField(assignedTo);
-		JDateChooser dueDateField = new JDateChooser(dueDate);
-		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
-		cropIdCombo.insertItemAt(null, 0);
-		cropIdCombo.setSelectedItem(cropId);
-
-		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
-		priorityCombo.setSelectedItem(priority);
-
-		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
-		statusCombo.setSelectedItem(status);
-
-		// Tooltips
-		taskNameField.setToolTipText("Enter the name of the task (max 50 characters)");
-		assignedToField.setToolTipText("Enter the name of the assignee");
-		dueDateField.setToolTipText("Pick a due date for the task");
-		cropIdCombo.setToolTipText("Optionally associate a crop ID");
-		priorityCombo.setToolTipText("Select the task priority");
-		statusCombo.setToolTipText("Set the current status of the task");
-
-		// Limit task name input to 50 characters
-		taskNameField.setDocument(new PlainDocument() {
+		/*________________________ COMPONENTS ________________________*/
+		JTextField taskNameField = new JTextField();
+		taskNameField.setDocument(new PlainDocument() { // LIMIT LENGTH
 			@Override
 			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 				if (str != null && (getLength() + str.length()) <= 50) {
@@ -234,8 +202,21 @@ public class TaskDialog {
 				}
 			}
 		});
+		taskNameField.setText(taskName);
 
-		// Border validation
+		JTextField assignedToField = new JTextField(assignedTo);
+		JDateChooser dueDateField = new JDateChooser(dueDate);
+		JComboBox<Integer> cropIdCombo = new JComboBox<>(fetchCropIds());
+		cropIdCombo.insertItemAt(null, 0);
+		cropIdCombo.setSelectedItem(cropId); // SET PREVIOUS DATA
+
+		JComboBox<String> priorityCombo = new JComboBox<>(new String[]{"Low", "Medium", "High"});
+		priorityCombo.setSelectedItem(priority); // SET PREVIOUS DATA
+
+		JComboBox<String> statusCombo = new JComboBox<>(new String[]{"Pending", "In Progress", "Completed"});
+		statusCombo.setSelectedItem(status); // SET PREVIOUS DATA
+
+		/*________________________ REQUIRED_MAKER ________________________*/
 		Border defaultBorder = taskNameField.getBorder();
 		Border errorBorder = BorderFactory.createLineBorder(Color.RED);
 
@@ -259,11 +240,14 @@ public class TaskDialog {
 
 		dueDateField.getDateEditor().addPropertyChangeListener("date", e -> liveValidate.run());
 
-		// GridBag layout setup
-		int row = 0;
-		String[] labels = {
-				"Task Name *", "Assigned To *", "Due Date *",
-				"Crop ID (Optional)", "Priority *", "Status *"
+		/*________________________ ADD ________________________*/
+		String[][] labels = {
+				{"Task Name: ", "Enter the name of the task (max 50 characters"}, // Text labal --- Tooltip
+				{"Assigned To: ", "Enter the name of the assignee"},
+				{"Due Date: ", "Pick a due date for the task"},
+				{"Crop ID (Optional): ", "Optionally associate a crop ID"},
+				{"Priority: ", "Select the task priority"},
+				{"Status: ", "Set the current status of the task"}
 		};
 
 		JComponent[] fields = {
@@ -272,28 +256,28 @@ public class TaskDialog {
 		};
 
 		for (int i = 0; i < labels.length; i++) {
-			gbc.gridx = 0;
-			gbc.gridy = row;
-			contentPanel.add(new JLabel(labels[i]), gbc);
-			gbc.gridx = 1;
-			contentPanel.add(fields[i], gbc);
-			row++;
+			contentPanel.add(new JLabel(labels[i][0])); // FIXED TO THE 1ST COLUMN
+			fields[i].setToolTipText(labels[i][1]); // FIXED TO THE 2ND COLUMN
+			contentPanel.add(fields[i]);
 		}
 
-		// Submit button
-		JButton submitButton = new JButton("Update Task");
+		/*________________________ SUBMIT ________________________*/
+		JButton submitButton = new JButton("UPDATE TASK");
 		submitButton.setFocusPainted(false);
 
 		submitButton.addActionListener(e -> {
 			boolean hasError = false;
+
 			if (taskNameField.getText().trim().isEmpty()) {
 				taskNameField.setBorder(errorBorder);
 				hasError = true;
 			}
+
 			if (assignedToField.getText().trim().isEmpty()) {
 				assignedToField.setBorder(errorBorder);
 				hasError = true;
 			}
+
 			if (dueDateField.getDate() == null) {
 				dueDateField.setBorder(errorBorder);
 				hasError = true;
@@ -321,19 +305,15 @@ public class TaskDialog {
 			}
 		});
 
-		gbc.gridx = 0;
-		gbc.gridy = row;
-		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.CENTER;
-		contentPanel.add(submitButton, gbc);
-
+		contentPanel.add(new JPanel());
+		contentPanel.add(submitButton);
 		dialog.setContentPane(contentPanel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(mainFrame);
 		dialog.setVisible(true);
 	}
 
-	/*________________________ DELETE TASK DIALOG ________________________*/
+	/*--------------------- DELETE TASK DIALOG ---------------------*/
 	public void deleteSelectedTask() {
 		int selectedRow = Task_Manager.tasksTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -369,7 +349,7 @@ public class TaskDialog {
 	}
 
 
-	/*________________________ COMPLETE TASK DIALOG ________________________*/
+	/*--------------------- COMPLETE TASK DIALOG ---------------------*/
 	public void markTaskComplete() {
 		int selectedRow = Task_Manager.tasksTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -399,7 +379,6 @@ public class TaskDialog {
 			JOptionPane.showMessageDialog(mainFrame, "Task \"" + taskName + "\" has been marked as completed.");
 		}
 	}
-
 
 	/*--------------------- FETCH CROP_ID ---------------------*/
 	private Integer[] fetchCropIds() {

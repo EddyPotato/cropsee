@@ -1,7 +1,6 @@
 package ui_managers;
 
 import javax.swing.*;
-
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -32,8 +31,7 @@ public class Crop_Manager {
 				"Water Schedule", 
 				"Fertilizer Schedule", 
 				"Growth Stage", 
-				"Status", 
-				"Note"
+				"Status"
 		};
 
 		model = new DefaultTableModel(columnNames, 0) {
@@ -114,8 +112,7 @@ public class Crop_Manager {
 						rs.getString("water_schedule"),
 						rs.getString("fertilizer_schedule"),
 						rs.getString("growth_stage"),
-						rs.getString("status"),
-						rs.getString("notes")
+						rs.getString("status")
 				};
 				crops.add(row);
 			}
@@ -129,11 +126,11 @@ public class Crop_Manager {
 	/*________________________ ADD CROP ________________________*/
 	public static void addCrop(String name, Date plantingDate, Date harvestDate, String waterSchedule, 
 			String fertilizerSchedule, 
-			String growthStage, String status, String note) 
+			String growthStage, String status) 
 	{
 		String query = "INSERT INTO crops (crop_name, planting_date, harvest_date, water_schedule, "
-				+ "fertilizer_schedule, growth_stage, status, note)"
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "fertilizer_schedule, growth_stage, status)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = DBConnection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -144,7 +141,6 @@ public class Crop_Manager {
 			pstmt.setString(5, fertilizerSchedule); // 5
 			pstmt.setString(6, growthStage); // 6
 			pstmt.setString(7, status); // 7
-			pstmt.setString(8, note); // 8
 			pstmt.executeUpdate();
 			refreshCropTable();
 		} catch (SQLException e) {
@@ -154,14 +150,14 @@ public class Crop_Manager {
 
 	/*________________________ UPDATE ________________________*/
 	public static void updateCrop(int id, String name, Date plantingDate, Date harvestDate, String waterSchedule,
-			String fertilizerSchedule, String growthStage, String status, String note) {
+			String fertilizerSchedule, String growthStage, String status) {
 
 		String query = "UPDATE crops SET crop_name = ?, planting_date = ?, harvest_date = ?, " +
-					   "water_schedule = ?, fertilizer_schedule = ?, growth_stage = ?, status = ?, note = ? " +
-					   "WHERE crop_id = ?";
+				"water_schedule = ?, fertilizer_schedule = ?, growth_stage = ?, status = ? " +
+				"WHERE crop_id = ?";
 
 		try (Connection conn = DBConnection.getConnection();
-			 PreparedStatement pstmt = conn.prepareStatement(query)) {
+				PreparedStatement pstmt = conn.prepareStatement(query)) {
 
 			pstmt.setString(1, name);
 			pstmt.setDate(2, plantingDate);
@@ -170,8 +166,7 @@ public class Crop_Manager {
 			pstmt.setString(5, fertilizerSchedule);
 			pstmt.setString(6, growthStage);
 			pstmt.setString(7, status);
-			pstmt.setString(8, note);
-			pstmt.setInt(9, id); // ID goes last, for the WHERE clause
+			pstmt.setInt(8, id); // ID goes last, for the WHERE clause
 
 			pstmt.executeUpdate();
 			refreshCropTable();
@@ -192,7 +187,7 @@ public class Crop_Manager {
 			pstmt.executeUpdate();
 			refreshCropTable();
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Error: Existing tasks associated with the crop.\n" + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Error: Existing tasks associated with the crop.");
 		}
 	}
 
