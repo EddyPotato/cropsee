@@ -1,8 +1,8 @@
 package ui;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import javax.swing.*;
 
 public class BarChartPanel extends JPanel {
     private Map<String, Integer> chartData;
@@ -35,7 +35,6 @@ public class BarChartPanel extends JPanel {
         g2d.setColor(Color.WHITE);
         g2d.fillRect(padding, padding, chartWidth, chartHeight);
 
-        // Draw axes
         g2d.setColor(Color.DARK_GRAY);
         g2d.drawLine(padding, padding, padding, padding + chartHeight); // Y-axis
         g2d.drawLine(padding, padding + chartHeight, padding + chartWidth, padding + chartHeight); // X-axis
@@ -51,20 +50,16 @@ public class BarChartPanel extends JPanel {
         int x = padding + 10;
         for (Map.Entry<String, Integer> entry : chartData.entrySet()) {
             int barHeight = (int) ((double) entry.getValue() / maxValue * chartHeight);
-            
-            // Draw bar
+
             g2d.setColor(barColor);
             g2d.fillRect(x, padding + chartHeight - barHeight, barWidth - 5, barHeight);
-            
-            // Draw value label
+
             g2d.setColor(textColor);
-            drawCenteredText(g2d, String.valueOf(entry.getValue()), 
-                           x + (barWidth-5)/2, padding + chartHeight - barHeight - 15);
-            
-            // Draw status label
-            drawCenteredText(g2d, entry.getKey(), 
-                           x + (barWidth-5)/2, padding + chartHeight + 20);
-            
+            drawCenteredText(g2d, String.valueOf(entry.getValue()),
+                             x + (barWidth - 5) / 2, padding + chartHeight - barHeight - 15);
+            drawCenteredText(g2d, entry.getKey(),
+                             x + (barWidth - 5) / 2, padding + chartHeight + 20);
+
             x += barWidth;
         }
     }

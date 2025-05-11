@@ -77,7 +77,7 @@ public class Application {
 	}
 
 	/*===================== CRUD METHODS =====================*/
-	/*_____________________ CRUD - CROP MANAGEMENT _____________________*/
+	/*_____________________ CROP MANAGEMENT _____________________*/
 	/*--------------------- ADD CROP ---------------------*/
 	private void showAddCropDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
@@ -237,7 +237,8 @@ public class Application {
 		}
 	}
 
-	/*_____________________ CRUD - TASKS _____________________*/
+	/*===================== CRUD =====================*/
+	/*_____________________ TASKS _____________________*/
 	/*--------------------- ADD TASK ---------------------*/
 	private void showAddTaskDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
@@ -421,7 +422,7 @@ public class Application {
 		return cropIds.toArray(new Integer[0]);
 	}
 
-	/*_____________________ CRUD - INVENTORY MANAGEMENT _____________________*/
+	/*_____________________ INVENTORY MANAGEMENT _____________________*/
 	/*--------------------- ADD INVENTORY ---------------------*/
 	private void showAddInventoryDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add Inventory Item", true);
@@ -540,7 +541,7 @@ public class Application {
 		}
 	}
 
-	/*_____________________ CRUD - REPORTS _____________________*/
+	/*_____________________ REPORTS _____________________*/
 	/*--------------------- CREATE CROP REPORT ---------------------*/
 	private JPanel createCropReportTab() {
 		JPanel panel = new JPanel(new BorderLayout());
@@ -570,7 +571,7 @@ public class Application {
 		return panel;
 	}
 
-	/*--------------------- CREATE REPORT REPORT ---------------------*/
+	/*--------------------- CREATE TASKS REPORT ---------------------*/
 	private JPanel createTaskReportTab() {
 		JPanel panel = new JPanel(new BorderLayout());
 
@@ -744,71 +745,49 @@ public class Application {
 		mainFrame.setSize(1200, 700);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setLocationRelativeTo(null);
-
-		// DANGEROUS JK
-		//		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); // FULLSCREEN ON START
 
 		/*_____________________ STAGE _____________________*/
 		mainFrame.getContentPane().setLayout(new BorderLayout());
 		mainFrame.getContentPane().setBackground(Color.white);
 
 		/*===================== MASTER PANELS =====================*/
-		/*_____________________ LAYOUT _____________________*/
-		JPanel topPanel = new JPanel(new BorderLayout());
-		JPanel sidePanel = new JPanel(new GridLayout(5, 1, 0, 5)); // row, column, gaps-between-rows, gaps-between-columns
-		JPanel mainPanel = new JPanel(cardLayout);
-
-		/*_____________________ COLOR _____________________*/
-		topPanel.setBackground(Color.decode("#2C3E50"));
-		sidePanel.setBackground(Color.decode("#34495E"));
-		mainPanel.setBackground(Color.decode("#34495E"));
-
-		/*_____________________ PREFERRED SIZE _____________________*/
 		int logo_size = 50;
 		int title_size = 30;
+		
+		/*--------------------- PANEL #1: TOP ---------------------*/
+		JPanel topPanel = new JPanel(new BorderLayout());
+		topPanel.setBackground(Color.decode("#2C3E50"));
 		topPanel.setPreferredSize(new Dimension(0, 70)); // width - height
-		sidePanel.setPreferredSize(new Dimension(200, 0));
-		mainPanel.setPreferredSize(null);
-
-		/*_____________________ MAX SIZE _____________________*/
 		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-		sidePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-		mainPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-
-		/*_____________________ MARGIN _____________________*/
 		topPanel.setBorder(null);
-		sidePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // top, left, bottom, right
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-		/*===================== TOP PANEL =====================*/
-		/*_____________________ LOGO _____________________*/
+		
+		/*_____________________ CONTENTS _____________________*/
 		ImageIcon originalImage = new ImageIcon(getClass().getResource("/resources/Logo.png"));
 		Image scaledImage = originalImage.getImage().getScaledInstance(logo_size, logo_size, Image.SCALE_SMOOTH);
 		ImageIcon resizedImage = new ImageIcon(scaledImage);
-
 		JLabel logo = new JLabel(resizedImage);
 		logo.setPreferredSize(new Dimension(logo_size, logo_size));
 		logo.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-		/*_____________________ TITLE _____________________*/
 		JLabel title = new JLabel("<html><center>Crop See</center></html>");
 		title.setFont(new Font("Roboto", Font.BOLD, title_size));
 		title.setBounds(55, 10, 90, 24);
 		title.setForeground(new Color(30, 138, 56)); // DARK GREEN
 		title.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-		/*_____________________ CONTAINER (CENTERS USING GRIDBAG) _____________________*/
+		/*_____________________ CONTAINER _____________________*/
 		JPanel topContainer = new JPanel(new GridBagLayout());
 		topContainer.setOpaque(false);
 		topContainer.add(Box.createRigidArea(new Dimension(20, 0)));
 		topContainer.add(logo);
 		topContainer.add(Box.createRigidArea(new Dimension(20, 0)));
 		topContainer.add(title);
+		
+		// PUTS IN LEFT SIDE
+		topPanel.add(topContainer, BorderLayout.WEST); 
 
-		/*_____________________ ADDING CONTAINER TO TOP PANEL (LEFT-ALIGN USING BORDERLAYOUT) _____________________*/
-		topPanel.add(topContainer, BorderLayout.WEST);
-
-		/*_____________________ TOP PANEL - EVENT LISTERNERS _____________________*/
+		// EVENT LISTENER
 		logo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				System.out.println("Clicked!"); // Debug
@@ -823,20 +802,24 @@ public class Application {
 			}
 		});
 
-		/*===================== SIDE PANEL =====================*/
-		/*_____________________ BUTTON TEXT _____________________*/
+		/*--------------------- PANEL #2: SIDE ---------------------*/
+		JPanel sidePanel = new JPanel(new GridLayout(5, 1, 0, 5)); // row, column, gaps-between-rows, gaps-between-columns
+		sidePanel.setBackground(Color.decode("#34495E"));
+		sidePanel.setPreferredSize(new Dimension(200, 0));
+		sidePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		sidePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // top, left, bottom, right
+		
+		/*_____________________ CONTENT _____________________*/
 		JButton dashboardBtn = new JButton("<html>DASHBOARD</html>");
 		JButton manageBtn = new JButton("<html><center>CROP<br>MANAGEMENT</center></html>");
 		JButton tasksBtn = new JButton("<html>TASKS</html>");
 		JButton monitorBtn = new JButton("<html><center>INVENTORY MANAGEMENT</center></html>");
 		JButton reportsBtn = new JButton("<html>REPORTS</html>");
 
-		/*_____________________ BUTTON CUSTOMIZATION _____________________*/
+		// CUSTOMIZATION
 		JButton[] sideButtons = {dashboardBtn, manageBtn, tasksBtn, monitorBtn, reportsBtn};
-
 		Color normalColor = Color.decode("#27AE60");
 		Color hoverColor = Color.decode("#2ECC71");
-
 		for (JButton btn : sideButtons) {
 			btn.setFont(new Font("Roboto", Font.BOLD, 18));
 			btn.setFocusPainted(false);
@@ -856,59 +839,42 @@ public class Application {
 					btn.setBackground(normalColor);
 				}
 			});
-
 			sidePanel.add(btn);
 		}
 
-		/*===================== CENTRAL PANEL =====================*/
-		// None (Check "MASTER PANEL - INFO")
+		/*--------------------- PANEL #3: CENTER ---------------------*/
+		JPanel mainPanel = new JPanel(cardLayout);
+		mainPanel.setBackground(Color.decode("#34495E"));
+		mainPanel.setPreferredSize(null);
+		mainPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-		/*_____________________ ADD TO MAINFRAME _____________________*/
+		/*------------------------------------------------------------*/
 		mainFrame.getContentPane().add(topPanel, BorderLayout.NORTH);
 		mainFrame.getContentPane().add(sidePanel, BorderLayout.WEST);
 		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 
-		/*===================== PANELS=====================*/
-		JPanel dashboardPanel = new JPanel();
+		/*===================== CONTENT PANELS=====================*/
+		/*--------------------- CONTENT #2: CROP MANAGEMENT ---------------------*/
 		JPanel cropManagementPanel = new JPanel();
-		JPanel tasksPanel = new JPanel();
-		JPanel InventoryPanel = new JPanel();
-		JPanel reportPanel = new JPanel(new BorderLayout());
-
-		/*_____________________ LAYOUT _____________________*/
-		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
 		cropManagementPanel.setLayout(new BoxLayout(cropManagementPanel, BoxLayout.Y_AXIS));
-		tasksPanel.setLayout(new BoxLayout(tasksPanel, BoxLayout.Y_AXIS));
-		InventoryPanel.setLayout(new BoxLayout(InventoryPanel, BoxLayout.Y_AXIS));
-		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
-
-		/*_____________________ COLOR _____________________*/
-		dashboardPanel.setBackground(Color.decode("#34495E"));
 		cropManagementPanel.setBackground(Color.decode("#34495E"));
-		tasksPanel.setBackground(Color.decode("#34495E"));
-		InventoryPanel.setBackground(Color.decode("#34495E"));
-		reportPanel.setBackground(Color.decode("#34495E"));
-
-		/*_____________________ MARGIN _____________________*/
-		dashboardPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // top, left, bottom, right
 		cropManagementPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); 
-		tasksPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		InventoryPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		reportPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
-		/*===================== CROP MANAGEMENT =====================*/
+		
+		/*_____________________ CONTAINER _____________________*/
 		JPanel tableListofCrops = new JPanel(new BorderLayout()); // Use BorderLayout
 		tableListofCrops.setPreferredSize(new Dimension(Integer.MAX_VALUE, 400));
 		tableListofCrops.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-
-		// Adding the table to the Crop Management panel
-		CropTableManager.addCropManagementTable(tableListofCrops);
 
 		JPanel cropManagementActionPanel = new JPanel(new GridBagLayout());
 		cropManagementActionPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
 		cropManagementActionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 
-		// Create action buttons similar to tasks panel
+		/*_____________________ CONTENT _____________________*/
+		// TABLE (ON ANOTHER CLASS)
+		CropTableManager.addCropManagementTable(tableListofCrops);
+		
+		// ACTION BUTTONS
 		JButton addCropBtn = new JButton("Add New Crop");
 		addCropBtn.setBackground(Color.decode("#27AE60"));
 		addCropBtn.setForeground(Color.decode("#FFFFFF"));
@@ -925,7 +891,7 @@ public class Application {
 		editCropBtn.addActionListener(e -> showEditCropDialog());
 		deleteCropBtn.addActionListener(e -> deleteSelectedCrop());
 
-		// Style buttons
+		// BUTTON DESIGN
 		for (JButton btn : new JButton[]{addCropBtn, editCropBtn, deleteCropBtn}) {
 			btn.setFont(new Font("Roboto", Font.BOLD, 20));
 			btn.setFocusPainted(false);
@@ -933,32 +899,38 @@ public class Application {
 			btn.setMargin(new Insets(10, 10, 10, 10));
 		}
 
-		JPanel cropButtonContainer = new JPanel();
-
+		JPanel cropButtonContainer = new JPanel(); // BUTTONS CONTAINER
 		cropButtonContainer.add(addCropBtn);
 		cropButtonContainer.add(createActionButtonGap());
 		cropButtonContainer.add(editCropBtn);
 		cropButtonContainer.add(createActionButtonGap());
 		cropButtonContainer.add(deleteCropBtn);
-		cropManagementActionPanel.add(cropButtonContainer);
+		cropManagementActionPanel.add(cropButtonContainer); // ADDING TO MAIN CONTAINER
 
 		cropManagementPanel.add(tableListofCrops);
 		cropManagementPanel.add(createBorderGap());
-		cropManagementPanel.add(cropManagementActionPanel);
+		cropManagementPanel.add(cropManagementActionPanel); // HERE
 
-		/*===================== TASK =====================*/
+		/*--------------------- CONTENT #3: TASK ---------------------*/
+		JPanel tasksPanel = new JPanel();
+		tasksPanel.setLayout(new BoxLayout(tasksPanel, BoxLayout.Y_AXIS));
+		tasksPanel.setBackground(Color.decode("#34495E"));
+		tasksPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); 
+		
+		/*_____________________ CONTAINER _____________________*/
 		JPanel tableListofTasks = new JPanel(new BorderLayout());
 		tableListofTasks.setPreferredSize(new Dimension(10000, 400));
 		tableListofTasks.setMaximumSize(new Dimension(10000, Integer.MAX_VALUE));
-
-		// Adding the tasks table
-		TasksTableManager.addTasksTable(tableListofTasks);
+		
 
 		JPanel tasksActionPanel = new JPanel(new GridBagLayout());
 		tasksActionPanel.setPreferredSize(new Dimension(10000, 100));
 		tasksActionPanel.setMaximumSize(new Dimension(10000, 100));
 
-		// Action buttons
+		/*_____________________ CONTENT _____________________*/
+		TasksTableManager.addTasksTable(tableListofTasks); // ADDS TABLE TO CONTAINER
+		
+		// CUSTOMIZATION
 		JButton addTaskBtn = new JButton("Add New Task");
 		addTaskBtn.setBackground(Color.decode("#27AE60"));
 		addTaskBtn.setForeground(Color.decode("#FFFFFF"));
@@ -979,7 +951,7 @@ public class Application {
 		removeCompletedBtn.setBackground(Color.decode("#AF7AC5"));
 		removeCompletedBtn.setForeground(Color.decode("#FFFFFF"));
 
-		// Buttons listeners
+		// ACTION LISTENER
 		addTaskBtn.addActionListener(e -> showAddTaskDialog());
 		editTaskBtn.addActionListener(e -> showEditTaskDialog());
 		deleteTaskBtn.addActionListener(e -> deleteSelectedTask());
@@ -994,7 +966,7 @@ public class Application {
 			}
 		});
 
-		// Style buttons consistently
+		// BUTTON DESIGN
 		for (JButton btn : new JButton[]{addTaskBtn, editTaskBtn, deleteTaskBtn, completeTaskBtn, removeCompletedBtn}) {
 			btn.setFont(new Font("Roboto", Font.BOLD, 20));
 			btn.setFocusPainted(false);
@@ -1002,9 +974,7 @@ public class Application {
 			btn.setMargin(new Insets(10, 10, 10, 10));
 		}
 
-		// Add buttons with spacing
-		JPanel taskButtonsContainer = new JPanel();
-
+		JPanel taskButtonsContainer = new JPanel(); // BUTTONS CONTAINER
 		taskButtonsContainer.add(addTaskBtn);
 		taskButtonsContainer.add(createActionButtonGap());
 		taskButtonsContainer.add(editTaskBtn);
@@ -1014,35 +984,38 @@ public class Application {
 		taskButtonsContainer.add(completeTaskBtn);
 		taskButtonsContainer.add(createActionButtonGap());
 		taskButtonsContainer.add(removeCompletedBtn);
-		tasksActionPanel.add(taskButtonsContainer);
+		tasksActionPanel.add(taskButtonsContainer); // ADDING TO MAIN CONTAINER
 
 		tasksPanel.add(tableListofTasks);
 		tasksPanel.add(createBorderGap());
-		tasksPanel.add(tasksActionPanel);
+		tasksPanel.add(tasksActionPanel); // HERE
 
-
-		// THE REASON BAKIT NASA BABA TO KAYSA UNA IS NEED NIYANG BASA YUNG MGA TABLES AND DOING THAT NEEDS THE TWO NEEDED TABLES MAUNA SA KANYA
-		/*===================== DASHBOARD =====================*/
-		/*_____________________ MAIN CONTAINER _____________________*/
+		// THIS IS BEFORE BECAUSE ITS TABLES CONTENT ARE THE FIRST TWO PANELS (REFERENCE)
+		/*--------------------- CONTENT #1: DASHBOARD ---------------------*/
+		JPanel dashboardPanel = new JPanel();
+		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
+		dashboardPanel.setBackground(Color.decode("#34495E"));
+		dashboardPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); 
+		
+		/*_____________________ MAIN _____________________*/
 		JPanel tablesContainer = new JPanel();
 		tablesContainer.setLayout(new GridLayout(1, 2, 8, 8)); // 1 row, 2 columns, 8px gaps
 		tablesContainer.setPreferredSize(new Dimension(10000, 400));
 		tablesContainer.setMaximumSize(new Dimension(10000, Integer.MAX_VALUE));
 		tablesContainer.setBackground(Color.decode("#F2F2F2"));
 
-		/*_____________________ CROP CONTAINER (FOR BORDER) _____________________*/
+		/*_____________________ CONTAINER (FOR BORDERING) _____________________*/
 		JPanel cropContainer = new JPanel(new BorderLayout());
 		TitledBorder cropBorder = BorderFactory.createTitledBorder("CROPS"); // BORDER NAME
 		cropBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
 		cropContainer.setBorder(cropBorder);
 
-		/*_____________________ TASK CONTAINER (FOR BORDER) _____________________*/
 		JPanel taskContainer = new JPanel(new BorderLayout());
 		TitledBorder taskBorder = BorderFactory.createTitledBorder("TASKS"); // BORDER NAME
 		taskBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
 		taskContainer.setBorder(taskBorder);
 
-		/*_____________________ CROP TABLE _____________________*/
+		/*_____________________ TABLE _____________________*/
 		JTable initialCropTable = new JTable(CropTableManager.model);
 		initialCropTable.getTableHeader().setReorderingAllowed(false);
 		initialCropTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 14));
@@ -1058,7 +1031,7 @@ public class Application {
 		JScrollPane scrollableCropTable = new JScrollPane(initialCropTable);
 		cropContainer.add(scrollableCropTable);
 
-		/*_____________________ TASK TABLE _____________________*/
+		/*_____________________ TABLE _____________________*/
 		JTable initialTaskTable = new JTable(TasksTableManager.model);
 		initialTaskTable.getTableHeader().setReorderingAllowed(false);
 		initialTaskTable.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 14));
@@ -1111,7 +1084,12 @@ public class Application {
 		dashboardPanel.add(createBorderGap());
 		dashboardPanel.add(refreshPanel);
 
-		/*===================== INVENTORY =====================*/
+		/*--------------------- CONTENT #4: INVENTORY MANAGEMENT ---------------------*/
+		JPanel InventoryPanel = new JPanel();
+		InventoryPanel.setLayout(new BoxLayout(InventoryPanel, BoxLayout.Y_AXIS));
+		InventoryPanel.setBackground(Color.decode("#34495E"));
+		InventoryPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); 
+		
 		/*_____________________ PANEL #1 _____________________*/
 		JPanel inventoryListTable = new JPanel(new BorderLayout());
 		inventoryListTable.setPreferredSize(new Dimension(10000, 400));
@@ -1166,26 +1144,27 @@ public class Application {
 		InventoryPanel.add(createBorderGap());
 		InventoryPanel.add(inventoryActionPanel);
 
-		/*===================== REPORT =====================*/
-
+		/*--------------------- CONTENT #5: REPORTS ---------------------*/
+		JPanel reportPanel = new JPanel();
+		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
+		reportPanel.setBackground(Color.decode("#34495E"));
+		reportPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); 
+		
 		reportTabs = new JTabbedPane();
 		reportTabs.setPreferredSize(new Dimension(0, 400));
 		reportTabs.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-		// 1. Crop Reports Tab
-		JPanel cropReportTab = createCropReportTab(); // Already contains 1 chart
+		/*_____________________ #1 CROP TAB _____________________*/
+		JPanel cropReportTab = createCropReportTab();
 		reportTabs.addTab("CROPS", cropReportTab);
 
-		// 2. Task Reports Tab
-		JPanel taskReportTab = createTaskReportTab(); // Already contains 1 chart
+		/*_____________________ #2 TASK TAB _____________________*/
+		JPanel taskReportTab = createTaskReportTab();
 		reportTabs.addTab("TASKS", taskReportTab);
 
-		// 3. Inventory Reports Tab
-		JPanel inventoryReportTab = createInventoryReportTab(); // Already contains 1 chart
+		/*_____________________ #3 INVENTORY TAB _____________________*/
+		JPanel inventoryReportTab = createInventoryReportTab();
 		reportTabs.addTab("INVENTORY", inventoryReportTab);
-
-		// Add tabs to the report panel
-
 
 		/*_____________________ EXPORT _____________________*/
 		JPanel exportPanel = new JPanel(new GridBagLayout());
