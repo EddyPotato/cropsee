@@ -34,6 +34,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.JComboBox;
 
 import java.sql.Connection;
@@ -45,8 +46,10 @@ import java.sql.Statement;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;
 
@@ -262,11 +265,11 @@ public class Application {
 		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 
 
-		
+
 		/*===================== CONTENT PANELS=====================*/
 
-		
-		
+
+
 		/*--------------------- CONTENT #2: CROP MANAGEMENT ---------------------*/
 		/*--------------------- CONTENT #2: CROP MANAGEMENT ---------------------*/
 		/*--------------------- CONTENT #2: CROP MANAGEMENT ---------------------*/
@@ -362,7 +365,7 @@ public class Application {
 		JButton inProgressTaskBtn = new JButton("Mark In Progress");
 		inProgressTaskBtn.setBackground(Color.decode("#FFDE21"));
 		inProgressTaskBtn.setForeground(Color.decode("#FFFFFF"));
-		
+
 		JButton completeTaskBtn = new JButton("Mark Complete");
 		completeTaskBtn.setBackground(Color.decode("#5DADE2"));
 		completeTaskBtn.setForeground(Color.decode("#FFFFFF"));
@@ -413,56 +416,85 @@ public class Application {
 		tasksPanel.add(createBorderGap());
 		tasksPanel.add(tasksActionPanel); // HERE
 
-		// THIS IS BEFORE BECAUSE ITS TABLES CONTENT ARE THE FIRST TWO PANELS (REFERENCE)
-		/*--------------------- CONTENT #1: DASHBOARD ---------------------*/
+		// _____________________ CONTENT #1: DASHBOARD _____________________
 		JPanel dashboardPanel = new JPanel();
 		dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));
 		dashboardPanel.setBackground(Color.decode("#34495E"));
-		dashboardPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); 
+		dashboardPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-		/*_____________________ MAIN _____________________*/
+		// _____________________ MAIN _____________________
 		JPanel tablesContainer = new JPanel();
-		tablesContainer.setLayout(new GridLayout(1, 2, 0, 0)); // 1 row, 2 columns, 8px gaps
+		tablesContainer.setLayout(new GridLayout(1, 2, 0, 0));
 		tablesContainer.setPreferredSize(new Dimension(10000, 400));
 		tablesContainer.setMaximumSize(new Dimension(10000, Integer.MAX_VALUE));
 		tablesContainer.setBackground(Color.decode("#F2F2F2"));
 
-		/*_____________________ CONTAINER (FOR BORDERING) _____________________*/
+		// _____________________ CONTAINER (FOR BORDERING) _____________________
 		JPanel cropContainer = new JPanel(new BorderLayout());
 		TitledBorder cropBorder = new TitledBorder(BorderFactory.createEmptyBorder(), "CROPS");
 		cropBorder.setTitleFont(new Font("Roboto", Font.BOLD, 20));
-		cropBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
+		cropBorder.setTitleJustification(TitledBorder.CENTER);
 		cropContainer.setBorder(cropBorder);
 
 		JPanel taskContainer = new JPanel(new BorderLayout());
 		TitledBorder taskBorder = new TitledBorder(BorderFactory.createEmptyBorder(), "TASKS");
 		taskBorder.setTitleFont(new Font("Roboto", Font.BOLD, 20));
-		taskBorder.setTitleJustification(TitledBorder.CENTER); // ALIGNMENT OF NAME
+		taskBorder.setTitleJustification(TitledBorder.CENTER);
 		taskContainer.setBorder(taskBorder);
 
-		/*_____________________ TABLE _____________________*/
+		// _____________________ TABLE FOR CROP _____________________
 		JTable initialCropTable = new JTable(CropDataManager.model);
+
+		// Hide Crop ID column permanently
+//		hideColumn(initialCropTable, 0); // CROP ID
+		hideColumn(initialCropTable, 2); // DATE PLANTED
+		hideColumn(initialCropTable, 4); // DATE HARVESTED
+		hideColumn(initialCropTable, 5); // HARVESTED QUANTITY
+
+//		// _____________________ HIDE COLUMNS LOGIC ON BUTTON CLICK FOR CROP TABLE _____________________
+//		Map<Integer, Integer[]> cropColumnWidths = new HashMap<>();
+//		int[] cropColumnsToToggle = {2, 3}; // DATE PLANTED, DATE HARVESTED
+//		AtomicBoolean areCropColumnsHidden = new AtomicBoolean(false);
+//
+//		// Store original widths before toggling for the crop table
+//		for (int col : cropColumnsToToggle) {
+//			TableColumn column = initialCropTable.getColumnModel().getColumn(col);
+//			cropColumnWidths.put(col, new Integer[] {
+//					column.getMinWidth(),
+//					column.getMaxWidth(),
+//					column.getPreferredWidth()
+//			});
+//		}
+
+		// _____________________ STYLE CROP TABLE _____________________
 		reportButtonActions.styleTable(initialCropTable);
 		JScrollPane scrollableCropTable = new JScrollPane(initialCropTable);
 		cropContainer.add(scrollableCropTable);
 
-		/*_____________________ TABLE _____________________*/
+		// _____________________ TABLE FOR TASK _____________________
 		JTable initialTaskTable = new JTable(TaskDataManager.model);
+
+		// Hide Task ID column permanently using reusable method
+		hideColumn(initialTaskTable, 0); // CROP ID
+		hideColumn(initialTaskTable, 2); // DATE PLANTED
+		
+		// _____________________ STYLE TASK TABLE _____________________
 		reportButtonActions.styleTable(initialTaskTable);
 		JScrollPane scrollableTaskTable = new JScrollPane(initialTaskTable);
 		taskContainer.add(scrollableTaskTable);
 
-		/*_____________________ ADD _____________________*/
+		// _____________________ ADD TO CONTAINER _____________________
 		tablesContainer.add(cropContainer);
 		tablesContainer.add(taskContainer);
 
-		/*_____________________ REFRESH CONTAINER _____________________*/
-		JPanel refreshPanel = new JPanel(new GridBagLayout());
+		// _____________________ REFRESH CONTAINER _____________________
+		JPanel refreshPanel = new JPanel();
+		refreshPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // 20px horizontal and vertical gaps
 		refreshPanel.setPreferredSize(new Dimension(10000, 100));
 		refreshPanel.setMaximumSize(new Dimension(10000, 100));
 		refreshPanel.setBackground(Color.decode("#E8F5E9"));
 
-		/*_____________________ BUTTON _____________________*/
+		// _____________________ REFRESH BUTTON _____________________
 		JButton refreshBtn = new JButton("REFRESH TABLES");
 		refreshBtn.setFont(new Font("Roboto", Font.BOLD, 20));
 		refreshBtn.setBackground(Color.decode("#F9A825"));
@@ -471,20 +503,45 @@ public class Application {
 		refreshBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		refreshBtn.setMargin(new Insets(10, 10, 10, 10));
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.anchor = GridBagConstraints.CENTER;
-
-		refreshPanel.add(refreshBtn, gbc);
 		refreshBtn.addActionListener(e -> {
 			CropDataManager.refreshCropTable();
 			TaskDataManager.refreshTaskTable();
 		});
 
-		/*_____________________ ADD _____________________*/
+//		// _____________________ TOGGLE CROP COLUMNS BUTTON _____________________
+//		JButton toggleCropColumnsBtn = new JButton("TOGGLE CROP COLUMNS");
+//		toggleCropColumnsBtn.setFont(new Font("Roboto", Font.BOLD, 20));
+//		toggleCropColumnsBtn.setBackground(Color.decode("#388E3C"));
+//		toggleCropColumnsBtn.setForeground(Color.WHITE);
+//		toggleCropColumnsBtn.setFocusPainted(false);
+//		toggleCropColumnsBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//		toggleCropColumnsBtn.setMargin(new Insets(10, 10, 10, 10));
+
+//		// Toggle logic
+//		toggleCropColumnsBtn.addActionListener(e -> {
+//			for (int col : cropColumnsToToggle) {
+//				TableColumn column = initialCropTable.getColumnModel().getColumn(col);
+//				if (areCropColumnsHidden.get()) {
+//					// Show columns
+//					Integer[] widths = cropColumnWidths.get(col);
+//					column.setMinWidth(widths[0]);
+//					column.setMaxWidth(widths[1]);
+//					column.setPreferredWidth(widths[2]);
+//				} else {
+//					// Hide columns
+//					column.setMinWidth(0);
+//					column.setMaxWidth(0);
+//					column.setPreferredWidth(0);
+//				}
+//			}
+//			areCropColumnsHidden.set(!areCropColumnsHidden.get());
+//		});
+
+		// _____________________ ADD BUTTONS TO REFRESH PANEL _____________________
+		refreshPanel.add(refreshBtn);
+//		refreshPanel.add(toggleCropColumnsBtn);
+
+		// _____________________ ADD TO DASHBOARD PANEL _____________________
 		dashboardPanel.add(tablesContainer);
 		dashboardPanel.add(createBorderGap());
 		dashboardPanel.add(refreshPanel);
@@ -642,4 +699,11 @@ public class Application {
 		}
 	}
 
+	/*===================== HIDE COLUMN =====================*/
+	public static void hideColumn(JTable table, int columnIndex) {
+		TableColumn column = table.getColumnModel().getColumn(columnIndex);
+		column.setMinWidth(0);
+		column.setMaxWidth(0);
+		column.setPreferredWidth(0);
+	}
 }
