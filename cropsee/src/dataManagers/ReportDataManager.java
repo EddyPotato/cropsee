@@ -1,4 +1,4 @@
-package ui_managers;
+package dataManagers;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -15,7 +15,7 @@ import java.util.Date;  // Using java.util.Date for display
 import app.DBConnection;
 
 @SuppressWarnings("serial")
-public class Report_Manager {
+public class ReportDataManager {
 	/*_____________________ CLASS-LEVEL _____________________*/
 	private static DefaultTableModel model;
 	private static JTable reportsTable;

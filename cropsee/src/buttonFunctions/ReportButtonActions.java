@@ -1,6 +1,11 @@
-package dialogs_managers;
+package buttonFunctions;
 
 import app.DBConnection;
+import dataManagers.BarChartDataManager;
+import dataManagers.CropDataManager;
+import dataManagers.InventoryDataManager;
+import dataManagers.TaskDataManager;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -32,114 +37,124 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import ui_managers.BarChart_Manager;
-import ui_managers.Crop_Manager;
-import ui_managers.Inventory_Manager;
-import ui_managers.Task_Manager;
-
-public class ChartReportDialog {
+public class ReportButtonActions {
+	/*========================================== CLASS-LEVEL ==========================================*/
 	private final JFrame mainFrame;
-
-	// Constructor receives the main application frame to be used in dialogs
-	public ChartReportDialog(JFrame referenceFrame) {
+	public ReportButtonActions(JFrame referenceFrame) {
 		this.mainFrame = referenceFrame;
 	}
-
-	/*--------------------- CREATE CROP REPORT ---------------------*/
+	
+	/*========================================== (THIS CREATES THE USER INTERFACE) ==========================================*/
+	/*========================================== CREATE CROP REPORT ==========================================*/
+	/*========================================== CREATE CROP REPORT ==========================================*/
 	public JPanel createCropReportTab() {
+		/*_______________________________ MAIN PANEL _______________________________*/
 		JPanel panel = new JPanel(new BorderLayout());
 
-		// Fetch crop status data from Crop_Manager
-		Map<String, Integer> cropData = Crop_Manager.getCropStatusData();
+		/*_______________________________ GETS CROP DATA _______________________________*/
+		Map<String, Integer> cropData = CropDataManager.getCropStatusData();
 
-		// Create a bar chart for crop data
-		BarChart_Manager cropChart = new BarChart_Manager(cropData);
+		/*_______________________________ CREATES CHART _______________________________*/
+		BarChartDataManager cropChart = new BarChartDataManager(cropData);
 		cropChart.setPreferredSize(new Dimension(300, 300));
 
-		// Add the chart to the center of the panel
+		/*_______________________________ ADD CHART TO MAIN PANEL _______________________________*/
 		panel.add(cropChart, BorderLayout.CENTER);
 
-		// Create a button to refresh the chart with new data
+		/*_______________________________ BUTTONS _______________________________*/
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(1, 2, 5, 5));
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		buttonPanel.setBackground(Color.white);
 		
-		buttonPanel.add(createRefreshButton("Refresh Crop", cropChart, Crop_Manager::getCropStatusData)); // Refresh button
-		buttonPanel.add(createExportButton("Create Image", cropChart)); // Export button
+		buttonPanel.add(createRefreshButton("Refresh Crop", cropChart, CropDataManager::getCropStatusData)); // Refresh button
+		buttonPanel.add(createImageButton("Create Image", cropChart)); // Export button
 
-		panel.add(buttonPanel, BorderLayout.SOUTH); // Add button panel to the bottom of the main panel
-
-
+		/*_______________________________ ADD BUTTONS TO BOTTOM OF MAIN PANEL _______________________________*/
+		panel.add(buttonPanel, BorderLayout.SOUTH);
+		
+		/*_______________________________ RETURN PRODUCED TABLE _______________________________*/
 		return panel;
 	}
 
-	/*--------------------- CREATE TASKS REPORT ---------------------*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
 	public JPanel createTaskReportTab() {
+		/*_______________________________ MAIN PANEL _______________________________*/
 		JPanel panel = new JPanel(new BorderLayout());
 		
+		/*_______________________________ GETS TASK DATA _______________________________*/
+		Map<String, Integer> taskData = TaskDataManager.getTaskStatusData();
 
-		// Fetch task status data from Task_Manager
-		Map<String, Integer> taskData = Task_Manager.getTaskStatusData();
-
-		// Create a bar chart for task data
-		BarChart_Manager taskChart = new BarChart_Manager(taskData);
+		/*_______________________________ CREATES CHART _______________________________*/
+		BarChartDataManager taskChart = new BarChartDataManager(taskData);
 		taskChart.setPreferredSize(new Dimension(300, 300));
 
-		// Add chart and refresh button
+		/*_______________________________ ADD CHART TO MAIN PANEL _______________________________*/
 		panel.add(taskChart, BorderLayout.CENTER);
 
+		/*_______________________________ BUTTONS _______________________________*/
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(1, 2, 5, 5));
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		buttonPanel.setBackground(Color.white);
 		
-		buttonPanel.add(createRefreshButton("Refresh Crop", taskChart, Crop_Manager::getCropStatusData));
-		buttonPanel.add(createExportButton("Create Image", taskChart));
+		/*_______________________________ ADD BUTTONS TO BOTTOM OF MAIN PANEL _______________________________*/
+		buttonPanel.add(createRefreshButton("Refresh Crop", taskChart, TaskDataManager::getTaskStatusData));
+		buttonPanel.add(createImageButton("Create Image", taskChart));
 
+		/*_______________________________ ADD BUTTONS TO BOTTOM OF MAIN PANEL _______________________________*/
 		panel.add(buttonPanel, BorderLayout.SOUTH);
 
+		/*_______________________________ RETURN PRODUCED TABLE _______________________________*/
 		return panel;
 	}
 
-	/*--------------------- CREATE INVENTORY REPORT ---------------------*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
 	public JPanel createInventoryReportTab() {
+		/*_______________________________ MAIN PANEL _______________________________*/
 		JPanel panel = new JPanel(new BorderLayout());
 
-		// Retrieve inventory values and convert to Integer type
+		/*_______________________________ GETS INVENTORY DATA _______________________________*/
 		Map<String, Integer> inventoryData = new LinkedHashMap<>();
-		Inventory_Manager.getInventoryValueData().forEach((k, v) -> inventoryData.put(k, v.intValue()));
+		InventoryDataManager.getInventoryValueData().forEach((k, v) -> inventoryData.put(k, v.intValue()));
 
-		// Create a bar chart for inventory data
-		BarChart_Manager inventoryChart = new BarChart_Manager(inventoryData);
+		/*_______________________________ CREATES CHART _______________________________*/
+		BarChartDataManager inventoryChart = new BarChartDataManager(inventoryData);
 		inventoryChart.setPreferredSize(new Dimension(300, 300));
 
-		// Add chart to the panel
+		/*_______________________________ ADD CHART TO MAIN PANEL _______________________________*/
 		panel.add(inventoryChart, BorderLayout.CENTER);
 
-		// Add refresh button to update chart with latest inventory values
+		/*_______________________________ BUTTONS _______________________________*/
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(1, 2, 5, 5));
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		buttonPanel.setBackground(Color.white);
 		
+		/*_______________________________ ADD BUTTONS TO BOTTOM OF MAIN PANEL _______________________________*/
 		JButton refresh = createRefreshButton("Refresh Inventory", inventoryChart, () -> {
 			Map<String, Integer> newInventoryData = new LinkedHashMap<>();
-			Inventory_Manager.getInventoryValueData().forEach((k, v) -> newInventoryData.put(k, v.intValue()));
+			InventoryDataManager.getInventoryValueData().forEach((k, v) -> newInventoryData.put(k, v.intValue()));
 			return newInventoryData;
 		});
 		buttonPanel.add(refresh);
-		buttonPanel.add(createExportButton("Create Image", inventoryChart));
+		buttonPanel.add(createImageButton("Create Image", inventoryChart));
 
+		/*_______________________________ ADD BUTTONS TO BOTTOM OF MAIN PANEL _______________________________*/
 		panel.add(buttonPanel, BorderLayout.SOUTH);
+		
+		/*_______________________________ RETURN PRODUCED TABLE _______________________________*/
 		return panel;
 	}
 
-	/*--------------------- HELPER METHODS ---------------------*/
-
-	// Creates a styled refresh button that updates a chart using a provided data supplier
-	@SuppressWarnings("unused")
-	private JButton createRefreshButton(String label, BarChart_Manager chart, Supplier<Map<String, Integer>> dataSupplier) {
+	/*========================================== CREATE TASKS REPORT ==========================================*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
+	/*========================================== CREATE TASKS REPORT ==========================================*/
+	private JButton createRefreshButton(String label, BarChartDataManager chart, Supplier<Map<String, Integer>> dataSupplier) {
 		JButton refresh = new JButton(label);
 		refresh.setFont(new Font("Roboto", Font.BOLD, 20));
 		refresh.setFocusPainted(false);
@@ -153,9 +168,10 @@ public class ChartReportDialog {
 		return refresh;
 	}
 
-	// Creates a styled export button that allows the user to save the chart as an image
-	@SuppressWarnings("unused")
-	private JButton createExportButton(String label, BarChart_Manager chart) {
+	/*========================================== CREATE IMAGE ==========================================*/
+	/*========================================== CREATE IMAGE ==========================================*/
+	/*========================================== CREATE IMAGE ==========================================*/
+	private JButton createImageButton(String label, BarChartDataManager chart) {
 		JButton export = new JButton(label);
 		export.setFont(new Font("Roboto", Font.BOLD, 20));
 		export.setFocusPainted(false);
@@ -180,26 +196,34 @@ public class ChartReportDialog {
 		});
 		return export;
 	}
-
-	// Exports crop data to a CSV file
+	
+	/*========================================== FOR CROPS ==========================================*/
+	/*========================================== FOR CROPS ==========================================*/
+	/*========================================== FOR CROPS ==========================================*/
 	public void exportCropData() {
 		String query = "SELECT * FROM crops";
 		exportToCSV("Crops", query, new String[]{"Crop ID", "Crop Name", "Planting Date", "Harvest Date", "Status"});
 	}
-
-	// Exports task data to a CSV file
+	
+	/*========================================== FOR TASKS ==========================================*/
+	/*========================================== FOR TASKS ==========================================*/
+	/*========================================== FOR TASKS ==========================================*/
 	public void exportTaskData() {
 		String query = "SELECT * FROM tasks";
 		exportToCSV("Tasks", query, new String[]{"Task ID", "Task Name", "Assigned To", "Due Date", "Crop ID", "Priority", "Status"});
 	}
-
-	// Exports inventory data to a CSV file
+	
+	/*========================================== FOR INVENTORY ==========================================*/
+	/*========================================== FOR INVENTORY ==========================================*/
+	/*========================================== FOR INVENTORY ==========================================*/
 	public void exportInventoryData() {
 		String query = "SELECT * FROM inventory";
 		exportToCSV("Inventory", query, new String[]{"Item ID", "Item Name", "Quantity", "Condition"});
 	}
-
-	// Generic method to export any report data to CSV
+	
+	/*========================================== EXCEL MECHANISM ==========================================*/
+	/*========================================== EXCEL MECHANISM ==========================================*/
+	/*========================================== EXCEL MECHANISM ==========================================*/
 	private void exportToCSV(String reportType, String query, String[] headers) {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Save " + reportType + " Report");
@@ -241,16 +265,19 @@ public class ChartReportDialog {
 			}
 		}
 	}
-
-	// Updates a bar chart with fresh data and repaints it
-	private void refreshChart(BarChart_Manager chartPanel, Supplier<Map<String, Integer>> dataSupplier) {
+	
+	/*========================================== REFRESH ==========================================*/
+	/*========================================== REFRESH ==========================================*/
+	/*========================================== REFRESH ==========================================*/
+	private void refreshChart(BarChartDataManager chartPanel, Supplier<Map<String, Integer>> dataSupplier) {
 		chartPanel.setData(dataSupplier.get());
 		chartPanel.revalidate();
 		chartPanel.repaint();
 	}
-
-	// Styles a given JTable: centers text, customizes headers and fonts
-	@SuppressWarnings("serial")
+	
+	/*========================================== STYLE TABLE ==========================================*/
+	/*========================================== STYLE TABLE ==========================================*/
+	/*========================================== STYLE TABLE ==========================================*/
 	public void styleTable(JTable table) {
 		// Center-align all cell content
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -277,7 +304,7 @@ public class ChartReportDialog {
 				return this;
 			}
 		});
-
+		
 		// Set header and row sizes and fonts
 		table.getTableHeader().setPreferredSize(new Dimension(0, 40));
 		table.getTableHeader().setReorderingAllowed(false);

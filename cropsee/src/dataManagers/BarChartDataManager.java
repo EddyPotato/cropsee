@@ -1,4 +1,4 @@
-package ui_managers;
+package dataManagers;
 
 import java.awt.*;
 import java.util.Map;
@@ -8,13 +8,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 @SuppressWarnings("serial")
-public class BarChart_Manager extends JPanel {
+public class BarChartDataManager extends JPanel {
 	private Map<String, Integer> chartData;
 	private final Color barColor = new Color(30, 138, 56);
 	private final Color textColor = Color.BLACK;
 
 	/*_____________________ CHART _____________________*/
-	public BarChart_Manager(Map<String, Integer> data) {
+	public BarChartDataManager(Map<String, Integer> data) {
 		this.chartData = data;
 		setPreferredSize(new Dimension(600, 400));
 		setBackground(Color.WHITE);

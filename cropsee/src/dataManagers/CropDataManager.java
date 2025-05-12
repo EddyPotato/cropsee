@@ -1,4 +1,4 @@
-package ui_managers;
+package dataManagers;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -13,7 +13,7 @@ import java.util.Map;
 import app.DBConnection;
 
 @SuppressWarnings("serial")
-public class Crop_Manager {
+public class CropDataManager {
 	/*________________________ CLASS-LEVEL ________________________*/
 	public static DefaultTableModel model;
 	public static JTable cropTable;

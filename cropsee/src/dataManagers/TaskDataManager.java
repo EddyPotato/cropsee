@@ -1,4 +1,4 @@
-package ui_managers;
+package dataManagers;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -13,7 +13,7 @@ import java.util.Map;
 import app.DBConnection;
 
 @SuppressWarnings("serial")
-public class Task_Manager {
+public class TaskDataManager {
 	public static DefaultTableModel model;
 	public static JTable tasksTable;
 
@@ -170,6 +170,22 @@ public class Task_Manager {
 
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "Error deleting task: " + e.getMessage());
+		}
+	}
+	
+	/*________________________ MARK IN PROGRESS ________________________*/
+	public static void markTaskInProgress(int taskId) {
+		String query = "UPDATE tasks SET status = 'In Progress' WHERE task_id = ?";
+
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+			pstmt.setInt(1, taskId);
+			pstmt.executeUpdate();
+			refreshTaskTable();
+
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error marking task in progress: " + e.getMessage());
 		}
 	}
 

@@ -57,8 +57,8 @@ import java.io.File;
 
 import com.toedter.calendar.JDateChooser;
 
-import dialogs_managers.*;
-import ui_managers.*;
+import buttonFunctions.*;
+import dataManagers.*;
 
 @SuppressWarnings("unused")
 public class Application {
@@ -83,10 +83,10 @@ public class Application {
 	}
 
 	/*_____________________ CLASS REFERENCES _____________________*/
-	CropManagementDialog cropDialog = new CropManagementDialog(mainFrame); // Class = new Object(Parameter)
-	TaskDialog taskDialog = new TaskDialog(mainFrame);
-	InventoryDialog inventoryDialog = new InventoryDialog(mainFrame);
-	ChartReportDialog chartReportDialog = new ChartReportDialog(mainFrame);
+	CropButtonActions cropButtonActions = new CropButtonActions(mainFrame); // Class = new Object(Parameter)
+	TaskButtonActions taskButtonActions = new TaskButtonActions(mainFrame);
+	InventoryButtonActions inventoryButtonActions = new InventoryButtonActions(mainFrame);
+	ReportButtonActions reportButtonActions = new ReportButtonActions(mainFrame);
 
 	/*_____________________ METHODS _____________________*/
 	public static void main(String[] args) {
@@ -143,6 +143,8 @@ public class Application {
 		int title_size = 30;
 
 		/*--------------------- PANEL #1: TOP ---------------------*/
+		/*--------------------- PANEL #1: TOP ---------------------*/
+		/*--------------------- PANEL #1: TOP ---------------------*/
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setBackground(Color.decode("#2C3E50"));
 		topPanel.setPreferredSize(new Dimension(0, 70)); // width - height
@@ -189,6 +191,8 @@ public class Application {
 			}
 		});
 
+		/*--------------------- PANEL #2: SIDE ---------------------*/
+		/*--------------------- PANEL #2: SIDE ---------------------*/
 		/*--------------------- PANEL #2: SIDE ---------------------*/
 		JPanel sidePanel = new JPanel(new GridLayout(5, 1, 0, 5)); // row, column, gaps-between-rows, gaps-between-columns
 		sidePanel.setBackground(Color.decode("#34495E"));
@@ -244,6 +248,8 @@ public class Application {
 		}
 
 		/*--------------------- PANEL #3: CENTER ---------------------*/
+		/*--------------------- PANEL #3: CENTER ---------------------*/
+		/*--------------------- PANEL #3: CENTER ---------------------*/
 		JPanel mainPanel = new JPanel(cardLayout);
 		mainPanel.setBackground(Color.decode("#34495E"));
 		mainPanel.setPreferredSize(null);
@@ -255,7 +261,14 @@ public class Application {
 		mainFrame.getContentPane().add(sidePanel, BorderLayout.WEST);
 		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 
+
+		
 		/*===================== CONTENT PANELS=====================*/
+
+		
+		
+		/*--------------------- CONTENT #2: CROP MANAGEMENT ---------------------*/
+		/*--------------------- CONTENT #2: CROP MANAGEMENT ---------------------*/
 		/*--------------------- CONTENT #2: CROP MANAGEMENT ---------------------*/
 		JPanel cropManagementPanel = new JPanel();
 		cropManagementPanel.setLayout(new BoxLayout(cropManagementPanel, BoxLayout.Y_AXIS));
@@ -273,7 +286,7 @@ public class Application {
 
 		/*_____________________ CONTENT _____________________*/
 		// TABLE (ON ANOTHER CLASS)
-		Crop_Manager.addCropManagementTable(tableListofCrops);
+		CropDataManager.addCropManagementTable(tableListofCrops);
 
 		// ACTION BUTTONS
 		JButton addCropBtn = new JButton("Add New Crop");
@@ -288,9 +301,9 @@ public class Application {
 		deleteCropBtn.setBackground(Color.decode("#E74C3C"));
 		deleteCropBtn.setForeground(Color.decode("#FFFFFF"));
 
-		addCropBtn.addActionListener(e -> cropDialog.showAddCropDialog());
-		editCropBtn.addActionListener(e -> cropDialog.showEditCropDialog());
-		deleteCropBtn.addActionListener(e -> cropDialog.deleteSelectedCrop());
+		addCropBtn.addActionListener(e -> cropButtonActions.showAddCropDialog());
+		editCropBtn.addActionListener(e -> cropButtonActions.showEditCropDialog());
+		deleteCropBtn.addActionListener(e -> cropButtonActions.deleteSelectedCrop());
 
 		// BUTTON DESIGN
 		for (JButton btn : new JButton[]{addCropBtn, editCropBtn, deleteCropBtn}) {
@@ -313,6 +326,8 @@ public class Application {
 		cropManagementPanel.add(cropManagementActionPanel); // HERE
 
 		/*--------------------- CONTENT #3: TASK ---------------------*/
+		/*--------------------- CONTENT #3: TASK ---------------------*/
+		/*--------------------- CONTENT #3: TASK ---------------------*/
 		JPanel tasksPanel = new JPanel();
 		tasksPanel.setLayout(new BoxLayout(tasksPanel, BoxLayout.Y_AXIS));
 		tasksPanel.setBackground(Color.decode("#34495E"));
@@ -329,7 +344,7 @@ public class Application {
 		tasksActionPanel.setMaximumSize(new Dimension(10000, 100));
 
 		/*_____________________ CONTENT _____________________*/
-		Task_Manager.addTasksTable(tableListofTasks); // ADDS TABLE TO CONTAINER
+		TaskDataManager.addTasksTable(tableListofTasks); // ADDS TABLE TO CONTAINER
 
 		// CUSTOMIZATION
 		JButton addTaskBtn = new JButton("Add New Task");
@@ -344,6 +359,10 @@ public class Application {
 		deleteTaskBtn.setBackground(Color.decode("#E74C3C"));
 		deleteTaskBtn.setForeground(Color.decode("#FFFFFF"));
 
+		JButton inProgressTaskBtn = new JButton("Mark In Progress");
+		inProgressTaskBtn.setBackground(Color.decode("#FFDE21"));
+		inProgressTaskBtn.setForeground(Color.decode("#FFFFFF"));
+		
 		JButton completeTaskBtn = new JButton("Mark Complete");
 		completeTaskBtn.setBackground(Color.decode("#5DADE2"));
 		completeTaskBtn.setForeground(Color.decode("#FFFFFF"));
@@ -353,22 +372,23 @@ public class Application {
 		removeCompletedBtn.setForeground(Color.decode("#FFFFFF"));
 
 		// ACTION LISTENER
-		addTaskBtn.addActionListener(e -> taskDialog.showAddTaskDialog());
-		editTaskBtn.addActionListener(e -> taskDialog.showEditTaskDialog());
-		deleteTaskBtn.addActionListener(e -> taskDialog.deleteSelectedTask());
-		completeTaskBtn.addActionListener(e -> taskDialog.markTaskComplete());
+		addTaskBtn.addActionListener(e -> taskButtonActions.showAddTaskButtonActions());
+		editTaskBtn.addActionListener(e -> taskButtonActions.showEditTaskDialog());
+		deleteTaskBtn.addActionListener(e -> taskButtonActions.deleteSelectedTask());
+		inProgressTaskBtn.addActionListener(e -> taskButtonActions.markTaskInProgress());
+		completeTaskBtn.addActionListener(e -> taskButtonActions.markTaskComplete());
 		removeCompletedBtn.addActionListener(e -> {
 			int confirm = JOptionPane.showConfirmDialog(mainFrame, 
 					"This will permanently delete all completed tasks.\nContinue?", 
 					"Confirm Cleanup", JOptionPane.YES_NO_OPTION);
 
 			if (confirm == JOptionPane.YES_OPTION) {
-				Task_Manager.removeCompletedTasks();
+				TaskDataManager.removeCompletedTasks();
 			}
 		});
 
 		// BUTTON DESIGN
-		for (JButton btn : new JButton[]{addTaskBtn, editTaskBtn, deleteTaskBtn, completeTaskBtn, removeCompletedBtn}) {
+		for (JButton btn : new JButton[]{addTaskBtn, editTaskBtn, deleteTaskBtn, inProgressTaskBtn, completeTaskBtn, removeCompletedBtn}) {
 			btn.setFont(new Font("Roboto", Font.BOLD, 20));
 			btn.setFocusPainted(false);
 			btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -381,6 +401,8 @@ public class Application {
 		taskButtonsContainer.add(editTaskBtn);
 		taskButtonsContainer.add(createActionButtonGap());
 		taskButtonsContainer.add(deleteTaskBtn);
+		taskButtonsContainer.add(createActionButtonGap());
+		taskButtonsContainer.add(inProgressTaskBtn);
 		taskButtonsContainer.add(createActionButtonGap());
 		taskButtonsContainer.add(completeTaskBtn);
 		taskButtonsContainer.add(createActionButtonGap());
@@ -419,14 +441,14 @@ public class Application {
 		taskContainer.setBorder(taskBorder);
 
 		/*_____________________ TABLE _____________________*/
-		JTable initialCropTable = new JTable(Crop_Manager.model);
-		chartReportDialog.styleTable(initialCropTable);
+		JTable initialCropTable = new JTable(CropDataManager.model);
+		reportButtonActions.styleTable(initialCropTable);
 		JScrollPane scrollableCropTable = new JScrollPane(initialCropTable);
 		cropContainer.add(scrollableCropTable);
 
 		/*_____________________ TABLE _____________________*/
-		JTable initialTaskTable = new JTable(Task_Manager.model);
-		chartReportDialog.styleTable(initialTaskTable);
+		JTable initialTaskTable = new JTable(TaskDataManager.model);
+		reportButtonActions.styleTable(initialTaskTable);
 		JScrollPane scrollableTaskTable = new JScrollPane(initialTaskTable);
 		taskContainer.add(scrollableTaskTable);
 
@@ -458,8 +480,8 @@ public class Application {
 
 		refreshPanel.add(refreshBtn, gbc);
 		refreshBtn.addActionListener(e -> {
-			Crop_Manager.refreshCropTable();
-			Task_Manager.refreshTaskTable();
+			CropDataManager.refreshCropTable();
+			TaskDataManager.refreshTaskTable();
 		});
 
 		/*_____________________ ADD _____________________*/
@@ -467,6 +489,8 @@ public class Application {
 		dashboardPanel.add(createBorderGap());
 		dashboardPanel.add(refreshPanel);
 
+		/*--------------------- CONTENT #4: INVENTORY MANAGEMENT ---------------------*/
+		/*--------------------- CONTENT #4: INVENTORY MANAGEMENT ---------------------*/
 		/*--------------------- CONTENT #4: INVENTORY MANAGEMENT ---------------------*/
 		JPanel InventoryPanel = new JPanel();
 		InventoryPanel.setLayout(new BoxLayout(InventoryPanel, BoxLayout.Y_AXIS));
@@ -478,7 +502,7 @@ public class Application {
 		inventoryListTable.setPreferredSize(new Dimension(10000, 400));
 		inventoryListTable.setMaximumSize(new Dimension(10000, Integer.MAX_VALUE));
 
-		Inventory_Manager.addInventoryTable(inventoryListTable);
+		InventoryDataManager.addInventoryTable(inventoryListTable);
 
 		/*_____________________ PANEL #2 _____________________*/
 		JPanel inventoryActionPanel = new JPanel(new GridBagLayout());
@@ -508,9 +532,9 @@ public class Application {
 		}
 
 		/*_____________________ LISTENER FOR BUTTONS _____________________*/
-		addItemBtn.addActionListener(e -> inventoryDialog.showAddInventoryDialog());
-		editItemBtn.addActionListener(e -> inventoryDialog.showEditInventoryDialog());
-		deleteItemBtn.addActionListener(e -> inventoryDialog.deleteInventoryItem());
+		addItemBtn.addActionListener(e -> inventoryButtonActions.showAddinventoryButtonActions());
+		editItemBtn.addActionListener(e -> inventoryButtonActions.showEditinventoryButtonActions());
+		deleteItemBtn.addActionListener(e -> inventoryButtonActions.deleteInventoryItem());
 
 		/*_____________________ ADD BUTTONS TO PANEL #2 _____________________*/
 		JPanel buttoncontainer = new JPanel();
@@ -528,6 +552,8 @@ public class Application {
 		InventoryPanel.add(inventoryActionPanel);
 
 		/*--------------------- CONTENT #5: REPORTS ---------------------*/
+		/*--------------------- CONTENT #5: REPORTS ---------------------*/
+		/*--------------------- CONTENT #5: REPORTS ---------------------*/
 		JPanel reportPanel = new JPanel();
 		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
 		reportPanel.setBackground(Color.decode("#34495E"));
@@ -539,15 +565,15 @@ public class Application {
 
 		/*_____________________ #1 CROP TAB _____________________*/
 		JTabbedPane reportTabs = new JTabbedPane();
-		JPanel cropReportTab = chartReportDialog.createCropReportTab();
+		JPanel cropReportTab = reportButtonActions.createCropReportTab();
 		reportTabs.addTab("CROPS", cropReportTab);
 
 		/*_____________________ #2 TASK TAB _____________________*/
-		JPanel taskReportTab = chartReportDialog.createTaskReportTab();
+		JPanel taskReportTab = reportButtonActions.createTaskReportTab();
 		reportTabs.addTab("TASKS", taskReportTab);
 
 		/*_____________________ #3 INVENTORY TAB _____________________*/
-		JPanel inventoryReportTab = chartReportDialog.createInventoryReportTab();
+		JPanel inventoryReportTab = reportButtonActions.createInventoryReportTab();
 		reportTabs.addTab("INVENTORY", inventoryReportTab);
 
 		/*_____________________ EXPORT _____________________*/
@@ -569,13 +595,13 @@ public class Application {
 			int selectedTab = reportTabs.getSelectedIndex();
 			switch(selectedTab) {
 			case 0: 
-				chartReportDialog.exportCropData();
+				reportButtonActions.exportCropData();
 				break;
 			case 1: 
-				chartReportDialog.exportTaskData();
+				reportButtonActions.exportTaskData();
 				break;
 			case 2: 
-				chartReportDialog.exportInventoryData();
+				reportButtonActions.exportInventoryData();
 				break;
 			}
 		});
@@ -596,14 +622,14 @@ public class Application {
 		mainPanel.add(reportPanel, "reports");
 
 		/*===================== ACTION LISTENER FOR CARD LAYOUT =====================*/
-		dashboardBtn.addActionListener(e -> {  Crop_Manager.refreshCropTable(); Task_Manager.refreshTaskTable(); cardLayout.show(mainPanel, "dashboard"); });
-		manageBtn.addActionListener(e -> { Crop_Manager.refreshCropTable(); cardLayout.show(mainPanel, "crop management"); });
-		monitorBtn.addActionListener(e -> { Inventory_Manager.refreshInventoryTable(); cardLayout.show(mainPanel, "inventory"); });
-		tasksBtn.addActionListener(e -> { Task_Manager.refreshTaskTable(); cardLayout.show(mainPanel, "tasks"); });
+		dashboardBtn.addActionListener(e -> {  CropDataManager.refreshCropTable(); TaskDataManager.refreshTaskTable(); cardLayout.show(mainPanel, "dashboard"); });
+		manageBtn.addActionListener(e -> { CropDataManager.refreshCropTable(); cardLayout.show(mainPanel, "crop management"); });
+		monitorBtn.addActionListener(e -> { InventoryDataManager.refreshInventoryTable(); cardLayout.show(mainPanel, "inventory"); });
+		tasksBtn.addActionListener(e -> { TaskDataManager.refreshTaskTable(); cardLayout.show(mainPanel, "tasks"); });
 		reportsBtn.addActionListener(e -> cardLayout.show(mainPanel, "reports"));
 	}
 
-	// Method to set the active button
+	/*===================== ACTION BUTTON =====================*/
 	private void setActiveButton(JButton activeButton) {
 		for (JButton btn : sidebarBtns) {
 			if (btn == activeButton) {
