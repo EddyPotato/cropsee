@@ -556,7 +556,7 @@ public class Application {
 
 		JPanel exportButtonContainer = new JPanel();
 
-		JButton exportBtn = new JButton("Export Current Report");
+		JButton exportBtn = new JButton("EXPORT CURRENT REPORT");
 		exportBtn.setFont(new Font("Roboto", Font.BOLD, 20));
 		exportBtn.setFocusPainted(false);
 		exportBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
