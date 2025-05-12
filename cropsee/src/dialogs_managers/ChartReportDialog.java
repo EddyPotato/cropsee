@@ -201,6 +201,7 @@ public class ChartReportDialog {
 		chartPanel.repaint();
 	}
 
+	@SuppressWarnings("serial")
 	public void styleTable(JTable table) {
 		// Center all columns
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

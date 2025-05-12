@@ -34,7 +34,7 @@ public class TaskDialog {
 	private String lastUsedPriority = "Medium";
 	private String lastUsedStatus = "Pending";
 
-	@SuppressWarnings("serial")
+	@SuppressWarnings({ "serial", "unused" })
 	public void showAddTaskDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Task", true);
 		dialog.setPreferredSize(new Dimension(500, 400));
@@ -169,7 +169,7 @@ public class TaskDialog {
 	}
 
 	/*------------------------ UPDATE TASK DIALOG ------------------------*/
-	@SuppressWarnings("serial")
+	@SuppressWarnings({ "serial", "unused" })
 	public void showEditTaskDialog() {
 		int selectedRow = Task_Manager.tasksTable.getSelectedRow();
 		if (selectedRow == -1) {

@@ -32,7 +32,7 @@ public class InventoryDialog {
 	}
 
 	/*--------------------- ADD INVENTORY ---------------------*/
-	@SuppressWarnings("serial")
+	@SuppressWarnings({ "serial", "unused" })
 	public void showAddInventoryDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add Inventory Item", true);
 		dialog.setPreferredSize(new Dimension(400, 300));
@@ -153,6 +153,7 @@ public class InventoryDialog {
 	}
 
 	/*--------------------- EDIT INVENTORY ---------------------*/
+	@SuppressWarnings("unused")
 	public void showEditInventoryDialog() {
 		int selectedRow = Inventory_Manager.inventoryTable.getSelectedRow();
 		if (selectedRow == -1) {

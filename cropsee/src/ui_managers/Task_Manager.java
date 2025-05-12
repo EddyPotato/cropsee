@@ -288,6 +288,7 @@ public class Task_Manager {
 	}
 
 	/*________________________ GROUP TASKS BY CROP ________________________*/
+	@SuppressWarnings("unused")
 	public static Map<Integer, List<Object[]>> getTasksGroupedByCrop() {
 		Map<Integer, List<Object[]>> cropTasks = new LinkedHashMap<>();
 		String query = "SELECT * FROM tasks ORDER BY crop_id, due_date";

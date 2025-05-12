@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Map;
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class BarChart_Manager extends JPanel {
 	private Map<String, Integer> chartData;
 	private final Color barColor = new Color(30, 138, 56);
