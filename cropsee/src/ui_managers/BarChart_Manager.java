@@ -3,6 +3,9 @@ package ui_managers;
 import java.awt.*;
 import java.util.Map;
 import javax.swing.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 @SuppressWarnings("serial")
 public class BarChart_Manager extends JPanel {
@@ -85,5 +88,19 @@ public class BarChart_Manager extends JPanel {
 	public void setData(Map<String, Integer> newData) {
 		this.chartData = newData;
 		repaint();
+	}
+	
+	public void exportAsImage(File file) {
+		try {
+			BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+			Graphics2D g2 = image.createGraphics();
+			this.paintAll(g2);
+			g2.dispose();
+
+			ImageIO.write(image, "png", file);  // Save as PNG
+			JOptionPane.showMessageDialog(this, "Chart exported to:\n" + file.getAbsolutePath());
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

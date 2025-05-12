@@ -87,7 +87,7 @@ public class Application {
 	TaskDialog taskDialog = new TaskDialog(mainFrame);
 	InventoryDialog inventoryDialog = new InventoryDialog(mainFrame);
 	ChartReportDialog chartReportDialog = new ChartReportDialog(mainFrame);
-	
+
 	/*_____________________ METHODS _____________________*/
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
@@ -538,6 +538,7 @@ public class Application {
 		reportTabs.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 		/*_____________________ #1 CROP TAB _____________________*/
+		JTabbedPane reportTabs = new JTabbedPane();
 		JPanel cropReportTab = chartReportDialog.createCropReportTab();
 		reportTabs.addTab("CROPS", cropReportTab);
 
@@ -556,7 +557,7 @@ public class Application {
 
 		JPanel exportButtonContainer = new JPanel();
 
-		JButton exportBtn = new JButton("EXPORT CURRENT REPORT");
+		JButton exportBtn = new JButton("EXPORT REPORT");
 		exportBtn.setFont(new Font("Roboto", Font.BOLD, 20));
 		exportBtn.setFocusPainted(false);
 		exportBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
