@@ -23,6 +23,7 @@ public class CropManagementDialog {
 	}
 
 	/*----------- ADD CROP -----------*/
+	@SuppressWarnings("unused")
 	public void showAddCropDialog() {
 		JDialog dialog = new JDialog(mainFrame, "Add New Crop", true);
 		dialog.setPreferredSize(new Dimension(500, 400));
@@ -135,6 +136,7 @@ public class CropManagementDialog {
 	}
 
 	// Attach listeners to all fields
+	@SuppressWarnings("unused")
 	private void attachFieldListeners(JTextField nameField, JDateChooser plantingDateField, JDateChooser harvestDateField, JSpinner waterAmountSpinner, JComboBox<String> waterUnitCombo, JSpinner fertAmountSpinner, JComboBox<String> fertUnitCombo, JComboBox<String> growthStageCombo, JComboBox<String> statusCombo, Runnable validateFields) {
 		nameField.getDocument().addDocumentListener(simpleDocListener(validateFields));
 		plantingDateField.getDateEditor().addPropertyChangeListener("date", e -> validateFields.run());
@@ -186,6 +188,7 @@ public class CropManagementDialog {
 	}
 
 	/*--------------------- EDIT ---------------------*/
+	@SuppressWarnings("unused")
 	public void showEditCropDialog() {
 		int selectedRow = Crop_Manager.cropTable.getSelectedRow();
 		if (selectedRow == -1) {

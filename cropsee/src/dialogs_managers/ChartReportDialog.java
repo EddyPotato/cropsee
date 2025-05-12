@@ -1,5 +1,6 @@
 package dialogs_managers;
 
+import app.DBConnection;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -18,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -28,21 +28,20 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-
-import app.DBConnection;
 import ui_managers.BarChart_Manager;
 import ui_managers.Crop_Manager;
 import ui_managers.Inventory_Manager;
 import ui_managers.Task_Manager;
 
 public class ChartReportDialog {
-	private JFrame mainFrame;
+	private final JFrame mainFrame;
 	
 	public ChartReportDialog(JFrame referenceFrame) {
 		this.mainFrame = referenceFrame;
 	}
 	
 	/*--------------------- CREATE CROP REPORT ---------------------*/
+	@SuppressWarnings("unused")
 	public JPanel createCropReportTab() {
 		JPanel panel = new JPanel(new BorderLayout());
 
@@ -72,6 +71,7 @@ public class ChartReportDialog {
 	}
 
 	/*--------------------- CREATE TASKS REPORT ---------------------*/
+	@SuppressWarnings("unused")
 	public JPanel createTaskReportTab() {
 		JPanel panel = new JPanel(new BorderLayout());
 
@@ -100,6 +100,7 @@ public class ChartReportDialog {
 	}
 
 	/*--------------------- CREATE INVENTORY REPORT ---------------------*/
+	@SuppressWarnings("unused")
 	public JPanel createInventoryReportTab() {
 		JPanel panel = new JPanel(new BorderLayout());
 
@@ -200,7 +201,6 @@ public class ChartReportDialog {
 		chartPanel.repaint();
 	}
 
-	@SuppressWarnings("serial")
 	public void styleTable(JTable table) {
 		// Center all columns
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
